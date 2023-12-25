@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 
 	restServer "github.com/yunkon-kim/knock-knock/pkg/api/rest/server"
+	frontendServer "github.com/yunkon-kim/knock-knock/web/server"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
@@ -24,15 +25,25 @@ func main() {
 
 	log.Info().Msg("starting knock-knock server")
 
-	// Set the default port number "8056" for the REST API server to listen on
-	port := flag.String("port", "8056", "port number for the restapiserver to listen to")
+	// Set the default backendPort number "8056" for the REST API server to listen on
+	backendPort := flag.String("backendPort", "8056", "port number for the restapiserver to listen to")
 	flag.Parse()
 
 	// Validate port
-	if portInt, err := strconv.Atoi(*port); err != nil || portInt < 1 || portInt > 65535 {
-		log.Fatal().Msgf("%s is not a valid port number. Please retry with a valid port number (ex: -port=[1-65535]).", *port)
+	if portInt, err := strconv.Atoi(*backendPort); err != nil || portInt < 1 || portInt > 65535 {
+		log.Fatal().Msgf("%s is not a valid port number. Please retry with a valid port number (ex: -port=[1-65535]).", *backendPort)
 	}
-	log.Debug().Msgf("port number: %s", *port)
+	log.Debug().Msgf("backend port number: %s", *backendPort)
+
+	// Set the default frontendPort number "8888" for the REST API server to listen on
+	frontendPort := flag.String("frontendPort", "8888", "port number for the frontendServer to listen to")
+	flag.Parse()
+
+	// Validate port
+	if portInt, err := strconv.Atoi(*frontendPort); err != nil || portInt < 1 || portInt > 65535 {
+		log.Fatal().Msgf("%s is not a valid port number. Please retry with a valid port number (ex: -port=[1-65535]).", *backendPort)
+	}
+	log.Debug().Msgf("frontend port number: %s", *frontendPort)
 
 	//Setup database (meta_db/dat/knockknock.s3db)
 	log.Info().Msg("setting SQL Database")
@@ -64,7 +75,15 @@ func main() {
 
 	// Start REST Server
 	go func() {
-		restServer.RunServer(*port)
+		restServer.RunServer(*backendPort)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+
+	// Start Frontend Server
+	go func() {
+		frontendServer.RunFrontendServer(*frontendPort)
 		wg.Done()
 	}()
 

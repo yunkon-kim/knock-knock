@@ -149,6 +149,14 @@ func RunServer(port string) {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
+	// // identity and access management by keycloak
+	// baseUrl := viper.GetString("keycloak.baseUrl")
+	// realm := viper.GetString("keycloak.realm")
+	// clientId := viper.GetString("keycloak.clientId")
+	// clientSecret := viper.GetString("keycloak.clientSecret")
+
+	// iam := iam.NewIdentityAccessManager(baseUrl, realm, clientId, clientSecret)
+
 	// Conditions to prevent abnormal operation due to typos (e.g., ture, falss, etc.)
 	enableAuth := viper.GetString("api.auth.enabled") == "true"
 
