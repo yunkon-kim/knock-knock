@@ -8,4 +8,11 @@ import (
 
 func Init(e *echo.Echo) {
 	e.GET("/", handlers.IndexHandler)
+	e.GET("/index", handlers.IndexHandler)
+	e.GET("/auth", handlers.LoginKeycloak)
+	e.GET("/auth/callback", handlers.AuthCallback)
+}
+
+func Main(g *echo.Group) {
+	g.GET("", handlers.Main)
 }

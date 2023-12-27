@@ -51,3 +51,14 @@ self:
 apidoc:
   # export APIDOC_PATH=$KNOCKKNOCK_ROOT/pkg/api/rest/docs/swagger.json
   path: # To be set in runtime (based on knockknock.root)
+
+keycloak:
+  enabled: true
+  serverUrl: AN_SERVER_URL # http://{your-keycloack-domain-or-ip:port}
+  realm: A_REALM
+  clientId: A_CLIENT_ID
+  clientSecret: A_CLIENT_SECRET
+  realmRS256PublicKey: A_REALM_RS256_PUBLIC_KEY
+  redirectUrl: A_REDIRECT_URL # http://{your-webserver-domain-or-ip:port}/auth/callback
+  authUrl: AN_AUTH_URL # http://{your-keycloack-domain-or-ip:port}/realms/{your-realm}/protocol/openid-connect/auth
+  tokenUrl: AN_TOKEN_URL # http://{your-keycloack-domain-or-ip:port}/realms/{your-realm}/protocol/openid-connect/token

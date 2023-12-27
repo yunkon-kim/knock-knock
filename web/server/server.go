@@ -12,11 +12,29 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
+	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 
+	"github.com/yunkon-kim/knock-knock/web/middlewares"
 	"github.com/yunkon-kim/knock-knock/web/routes"
+)
+
+const (
+	infoColor    = "\033[1;34m%s\033[0m"
+	noticeColor  = "\033[1;36m%s\033[0m"
+	warningColor = "\033[1;33m%s\033[0m"
+	errorColor   = "\033[1;31m%s\033[0m"
+	debugColor   = "\033[0;36m%s\033[0m"
+)
+
+var (
+	// Session store의 키 값
+	// TODO: randomize it
+	key = []byte("super-secret-key")
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -32,6 +50,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 func RunFrontendServer(port string) {
 
 	e := echo.New()
+
 	// Custom logger middleware with zerolog
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogError:         true,
@@ -85,6 +104,8 @@ func RunFrontendServer(port string) {
 	// limit the application to 20 requests/sec using the default in-memory store
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
 
+	e.HideBanner = true
+
 	// Static files
 	e.Static("../../web/assets", "assets")
 
@@ -94,8 +115,22 @@ func RunFrontendServer(port string) {
 	}
 	e.Renderer = renderer
 
+	// Middleware for session management
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(key))))
+
 	// Routes
 	routes.Init(e)
+
+	g := e.Group("/main")
+	g.Use(middlewares.CheckSession)
+
+	routes.Main(g)
+
+	//
+	frontendUrl := " http://localhost:8888/index.html"
+
+	fmt.Printf(noticeColor, frontendUrl)
+	fmt.Println("\n ")
 
 	// A context for graceful shutdown (It is based on the signal package)selfEndpoint := os.Getenv("SELF_ENDPOINT")
 	// NOTE -
@@ -118,8 +153,8 @@ func RunFrontendServer(port string) {
 		// Block until a signal is triggered
 		<-gracefulShutdownContext.Done()
 
-		fmt.Println("\n[Stop] Knock-knock REST API server")
-		log.Info().Msg("stopping Knock-knock REST API server")
+		fmt.Println("\n[Stop] Knock-knock frontend server")
+		log.Info().Msg("stopping Knock-knock frontend server")
 		ctx, cancel := context.WithTimeout(context.TODO(), 3*time.Second)
 		defer cancel()
 
@@ -128,10 +163,11 @@ func RunFrontendServer(port string) {
 		}
 	}(&wg)
 
-	log.Info().Msg("starting Knock-knock REST API server")
+	log.Info().Msg("starting Knock-knock frontend server")
 	port = fmt.Sprintf(":%s", port)
 	if err := e.Start(port); err != nil && err != http.ErrServerClosed {
-		e.Logger.Panic("shuttig down the server")
+		log.Error().Err(err).Msg("shuttig down the frontend server")
+		e.Logger.Panic("shuttig down the frontend server")
 	}
 
 	wg.Wait()

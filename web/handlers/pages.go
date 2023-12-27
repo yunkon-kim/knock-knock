@@ -9,3 +9,7 @@ import (
 func IndexHandler(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", nil)
 }
+
+func Main(c echo.Context) error {
+	return c.Render(http.StatusOK, "main.html", nil)
+}
