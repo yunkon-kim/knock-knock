@@ -13,24 +13,24 @@ import (
 )
 
 type identityAccessManager struct {
-	baseUrl      string
-	realm        string
-	clientId     string
-	clientSecret string
-	client       *gocloak.GoCloak
+	authServerUrl string
+	realm         string
+	clientId      string
+	clientSecret  string
+	client        *gocloak.GoCloak
 }
 
 func NewIdentityAccessManager(baseUrl, realm, clientId, clientSecret string) *identityAccessManager {
 	return &identityAccessManager{
-		baseUrl:      baseUrl,
-		realm:        realm,
-		clientId:     clientId,
-		clientSecret: clientSecret,
+		authServerUrl: baseUrl,
+		realm:         realm,
+		clientId:      clientId,
+		clientSecret:  clientSecret,
 	}
 }
 
 func (iam *identityAccessManager) loginClient(ctx context.Context) (*gocloak.JWT, error) {
-	client := gocloak.NewClient(iam.baseUrl)
+	client := gocloak.NewClient(iam.authServerUrl)
 
 	token, err := client.LoginClient(ctx, iam.clientId, iam.clientSecret, iam.realm)
 	if err != nil {
@@ -46,7 +46,7 @@ func (iam *identityAccessManager) CreateUser(ctx context.Context, user gocloak.U
 		return nil, err
 	}
 
-	client := gocloak.NewClient(iam.baseUrl)
+	client := gocloak.NewClient(iam.authServerUrl)
 
 	userId, err := client.CreateUser(ctx, token.AccessToken, iam.realm, user)
 	if err != nil {
@@ -81,7 +81,7 @@ func (iam *identityAccessManager) CreateUser(ctx context.Context, user gocloak.U
 
 func (iam *identityAccessManager) RetrospectToken(ctx context.Context, accessToken string) (*gocloak.IntroSpectTokenResult, error) {
 
-	client := gocloak.NewClient(iam.baseUrl)
+	client := gocloak.NewClient(iam.authServerUrl)
 
 	rptResult, err := client.RetrospectToken(ctx, accessToken, iam.clientId, iam.clientSecret, iam.realm)
 	if err != nil {
