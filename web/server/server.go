@@ -16,7 +16,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
+	_ "github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 
 	"github.com/yunkon-kim/knock-knock/web/middlewares"
@@ -127,7 +130,7 @@ func RunFrontendServer(port string) {
 	routes.Main(g)
 
 	//
-	frontendUrl := " http://localhost:8888/index.html"
+	frontendUrl := " http://localhost:8888/"
 
 	fmt.Printf(noticeColor, frontendUrl)
 	fmt.Println("\n ")

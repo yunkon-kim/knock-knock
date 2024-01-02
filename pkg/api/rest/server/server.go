@@ -194,9 +194,13 @@ func RunServer(port string) {
 	// Route for system management
 	e.GET("/knock-knock/swagger/*", echoSwagger.WrapHandler)
 
-	// Knock API group which has /knock as prefix
-	groupBase := e.Group("/knock")
+	// Knock API group which has /knock-knock as prefix
+	groupBase := e.Group("/knock-knock")
 	groupBase.GET("/health", controller.RestGetHealth)
+
+	// NHN Cloud API group
+	groupNHN := groupBase.Group("/nhn")
+	route.RegisterNHNRoutes(groupNHN)
 
 	// Sample API group (for developers to add new API)
 	groupSample := groupBase.Group("/sample")
