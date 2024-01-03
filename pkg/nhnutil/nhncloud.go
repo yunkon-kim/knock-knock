@@ -1,14 +1,10 @@
 package nhnutil
 
 import (
-	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/viper"
@@ -121,26 +117,35 @@ type Metadata struct {
 
 // Get /v2.0/security-groups - response body
 type SecurityGroups struct {
-	SecurityGroups []SecurityGroup `json:"security_groups"`
+	SecurityGroups []SecurityGroupDetails `json:"security_groups"`
 }
 
 type SecurityGroup struct {
-	TenantId           string              `json:"tenant_id"`
-	Description        string              `json:"description"`
-	Id                 string              `json:"id"`
-	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
-	Name               string              `json:"name"`
+	SecurityGroup SecurityGroupDetails `json:"security_group"`
 }
+
+type SecurityGroupDetails struct {
+	TenantId           string                     `json:"tenant_id,omitempty"`
+	Description        string                     `json:"description"`
+	Id                 string                     `json:"id"`
+	SecurityGroupRules []SecurityGroupRuleDetails `json:"security_group_rules"`
+	Name               string                     `json:"name"`
+}
+
 type SecurityGroupRule struct {
-	Direction       string `json:"direction"`
-	Protocol        string `json:"protocol"`
+	SecurityGroupRule SecurityGroupRuleDetails `json:"security_group_rule"`
+}
+
+type SecurityGroupRuleDetails struct {
+	Direction       string `json:"direction" default:"ingress"`
+	Protocol        string `json:"protocol" default:"tcp"`
 	Description     string `json:"description"`
 	PortRangeMax    int    `json:"port_range_max"`
-	Id              string `json:"id"`
-	RemoteGroupId   string `json:"remote_group_id"`
+	Id              string `json:"id,omitempty"`
+	RemoteGroupId   string `json:"remote_group_id,omitempty"`
 	RemoteIpPrefix  string `json:"remote_ip_prefix"`
 	SecurityGroupId string `json:"security_group_id"`
-	TenantId        string `json:"tenant_id"`
+	TenantId        string `json:"tenant_id,omitempty"`
 	PortRangeMin    int    `json:"port_range_min"`
 	Ethertype       string `json:"ethertype"`
 }
@@ -168,6 +173,18 @@ func init() {
 	if apiPassword == "" {
 		log.Fatal().Msg("apiPassword is not set in config file or environment variable")
 	}
+
+	// Set token ID
+	SetTokenId()
+}
+
+func checkResponse(resp *resty.Response) error {
+	if resp.StatusCode() < http.StatusOK || resp.StatusCode() >= http.StatusMultipleChoices {
+		errMsg := fmt.Sprintf("API call failed with status code: %d, body: %s", resp.StatusCode(), resp.String())
+		log.Error().Msg(errMsg)
+		return errors.New(errMsg)
+	}
+	return nil
 }
 
 func GetToken() (string, error) {
@@ -201,19 +218,15 @@ func GetToken() (string, error) {
 		Post(urlToken)
 
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to get token")
+		return "", err
+	}
+	if err := checkResponse(resp); err != nil {
 		return "", err
 	}
 
 	log.Info().Msg("Successfully got token")
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
 	log.Debug().Msgf("Response Body: %s", resp.String())
-
-	if resp.StatusCode() < http.StatusOK || resp.StatusCode() >= http.StatusMultipleChoices {
-		// 2xx status codes indicate success, no error
-		log.Error().Err(errors.New(resp.String())).Msg("Failed to get token")
-		return "", errors.New(resp.String())
-	}
 
 	return resp.String(), nil
 }
@@ -228,12 +241,12 @@ func GetTokenId() (string, error) {
 
 	// Parse JSON
 	var authResponse AuthResponse
-
 	err = json.Unmarshal([]byte(token), &authResponse)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to parse JSON")
 		return "", err
 	}
+	log.Debug().Msgf("Parsed JSON: %+v", authResponse)
 
 	log.Info().Msg("Successfully got token")
 	log.Debug().Msgf("Extracted Token ID: %s\n", authResponse.Access.Token.ID)
@@ -269,7 +282,9 @@ func GetSecurityGroups(region Region) (string, error) {
 		Get(urlSecurityGroups)
 
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to get security group")
+		return "", err
+	}
+	if err := checkResponse(resp); err != nil {
 		return "", err
 	}
 
@@ -278,17 +293,10 @@ func GetSecurityGroups(region Region) (string, error) {
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
 	log.Debug().Msgf("Response Body: %s", resp.String())
 
-	if resp.StatusCode() < http.StatusOK || resp.StatusCode() >= http.StatusMultipleChoices {
-		// 2xx status codes indicate success, no error
-		log.Error().Err(errors.New(resp.String())).Msg("Failed to get security group")
-
-		return "", errors.New(resp.String())
-	}
-
 	return resp.String(), nil
 }
 
-// GetSecurityGroup function gets a security group.
+// Get a security group
 func GetSecurityGroup(region Region, securityGroupId string) (string, error) {
 	client := resty.New()
 
@@ -304,7 +312,9 @@ func GetSecurityGroup(region Region, securityGroupId string) (string, error) {
 		Get(urlSecurityGroup)
 
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to get security group")
+		return "", err
+	}
+	if err := checkResponse(resp); err != nil {
 		return "", err
 	}
 
@@ -313,112 +323,76 @@ func GetSecurityGroup(region Region, securityGroupId string) (string, error) {
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
 	log.Debug().Msgf("Response Body: %s", resp.String())
 
-	if resp.StatusCode() < http.StatusOK || resp.StatusCode() >= http.StatusMultipleChoices {
-		// 2xx status codes indicate success, no error
-		log.Error().Err(errors.New(resp.String())).Msg("Failed to get security group")
-		return "", errors.New(resp.String())
+	return resp.String(), nil
+}
+
+// Create a security group rule
+func CreateSecurityGroupRule(region Region, rule SecurityGroupRule) (string, error) {
+
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL for a security group
+	urlSecurityGroup := fmt.Sprintf("%s/v2.0/security-group-rules", apiEndpoint)
+
+	// Set request body
+	reqJsonBytes, err := json.Marshal(rule)
+	log.Debug().Msgf("Request Body: %s", reqJsonBytes)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to marshal JSON")
+		return "", err
 	}
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		SetBody(reqJsonBytes).
+		Post(urlSecurityGroup)
+
+	if err != nil {
+		return "", err
+	}
+	if err := checkResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully created security group rule")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Debug().Msgf("Response Body: %s", resp.String())
 
 	return resp.String(), nil
 }
 
-// GenSecurityGroup function creates an NHN Cloud security group.
-func GenSecurityGroup(securityGroupName string) {
-	tfConfig := fmt.Sprintf(`
-resource "nhncloud_security_group" "%s" {
-	name        = "%s"
-	description = "Security group for %s"
-	// Add necessary security rules here.
-}
-`, securityGroupName, securityGroupName, securityGroupName)
+// Delete a security group rule
+func DeleteSecurityGroupRule(region Region, securityGroupRuleId string) error {
 
-	createTerraformFile(filenameSecurityGroup, tfConfig)
-}
+	client := resty.New()
 
-// UpdateSecurityGroup 함수는 securityGroup 파일을 업데이트합니다.
-func UpdateSecurityGroup(securityGroupName, newRule string) error {
-	filePath := filenameSecurityGroup
-	updatedContent, err := addNewRuleToSecurityGroup(filePath, securityGroupName, newRule)
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL for a security group
+	urlSecurityGroup := fmt.Sprintf("%s/v2.0/security-group-rules/%s", apiEndpoint, securityGroupRuleId)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Delete(urlSecurityGroup)
+
 	if err != nil {
 		return err
 	}
-
-	return overwriteFile(filePath, updatedContent)
-}
-
-// addNewRuleToSecurityGroup 함수는 보안 그룹에 새로운 규칙을 추가합니다.
-func addNewRuleToSecurityGroup(filePath, securityGroupName, newRule string) (string, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	var updatedLines []string
-	scanner := bufio.NewScanner(file)
-	insideBlock := false
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Contains(line, fmt.Sprintf(`resource "nhncloud_security_group" "%s" {`, securityGroupName)) {
-			insideBlock = true
-		}
-
-		if insideBlock && strings.Contains(line, "}") {
-			updatedLines = append(updatedLines, newRule) // 새로운 규칙 추가
-			insideBlock = false
-		}
-
-		updatedLines = append(updatedLines, line)
+	if err := checkResponse(resp); err != nil {
+		return err
 	}
 
-	if err := scanner.Err(); err != nil {
-		return "", err
-	}
+	// Print result
+	log.Info().Msg("Successfully deleted security group rule")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Debug().Msgf("Response Body: %s", resp.String())
 
-	return strings.Join(updatedLines, "\n"), nil
-}
-
-// overwriteFile 함수는 파일의 내용을 덮어씁니다.
-func overwriteFile(filePath, content string) error {
-	return os.WriteFile(filePath, []byte(content), 0644)
-}
-
-// AttachSecurityGroup function attaches a security group to a specific resource.
-func AttachSecurityGroup(resourceType, resourceName, securityGroupName string) {
-	tfConfig := fmt.Sprintf(`
-resource "%s" "%s" {
-	// Add resource details here.
-
-	security_group = nhncloud_security_group.%s.id
-}
-`, resourceType, resourceName, securityGroupName)
-
-	createTerraformFile(filenameAttachSecurityGroup, tfConfig)
-}
-
-// createTerraformFile function creates a Terraform file with the given content.
-func createTerraformFile(fileName, content string) {
-	file, err := os.Create(fileName)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(content)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Terraform configuration file '%s' created.\n", fileName)
-}
-
-// TerraformApply function applies the Terraform configuration.
-func TerraformApply() {
-	cmd := exec.Command("terraform", "apply", "-auto-approve")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		panic(err)
-	}
+	return nil
 }
