@@ -11,4 +11,8 @@ func RegisterNHNRoutes(g *echo.Group) {
 	g.POST("/tokenId", controller.SetTokenId)
 	g.GET("/sg", controller.GetSecurityGroups)
 	g.GET("/sg/:id", controller.GetSecurityGroup)
+	g.POST("/sgRule", controller.CreateSecurityGroupRule)
+	g.DELETE("/sgRule/:id", controller.DeleteSecurityGroupRule)
+	// g.PUT("/sg/:id", controller.UpdateSecurityGroup)
+
 }
