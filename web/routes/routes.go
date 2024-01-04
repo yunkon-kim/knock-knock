@@ -7,12 +7,12 @@ import (
 )
 
 func Init(e *echo.Echo) {
-	e.GET("/", handlers.IndexHandler)
-	e.GET("/index", handlers.IndexHandler)
-	e.GET("/auth", handlers.LoginKeycloak)
+	e.GET("/", handlers.LoginKeycloak)
 	e.GET("/auth/callback", handlers.AuthCallback)
 }
 
 func Main(g *echo.Group) {
-	g.GET("", handlers.Main)
+	g.GET("/dashboard.html", handlers.Dashboard)
+	g.GET("/tables-basic.html", handlers.TablesBasic)
+	
 }

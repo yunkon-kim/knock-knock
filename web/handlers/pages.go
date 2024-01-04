@@ -6,10 +6,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func IndexHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "index.html", nil)
+func Dashboard(c echo.Context) error {
+	return c.Render(http.StatusOK, "dashboard.html", nil)
 }
 
-func Main(c echo.Context) error {
-	return c.Render(http.StatusOK, "main.html", nil)
+func TablesBasic(c echo.Context) error {
+	return c.Render(http.StatusOK, "tables-basic.html", nil)
 }
