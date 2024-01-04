@@ -98,7 +98,7 @@ func AuthCallback(c echo.Context) error {
 	// ...
 	sess.Save(c.Request(), c.Response())
 
-	return c.Redirect(http.StatusFound, "http://localhost:8888/main/dashboard.html")
+	return c.Redirect(http.StatusFound, "http://localhost:8888/kk/home.html")
 }
 
 // parseKeycloakRSAPublicKey parses the RSA public key from the base64 string.
