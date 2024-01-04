@@ -86,9 +86,9 @@ func RunFrontendServer(port string) {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(key))))
 
 	// Routes
-	routes.Init(e)
+	routes.Auth(e)
 
-	g := e.Group("/main")
+	g := e.Group("/kk")
 	g.Use(middlewares.CheckSession)
 
 	routes.Main(g)
