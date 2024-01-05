@@ -7,6 +7,6 @@ type MyUser struct {
 }
 
 type BasicResponse struct {
-	Result string  `json:"Result"`
-	Error  *string `json:"Error"`
+	Result string  `json:"result"`
+	Error  *string `json:"error"`
 }

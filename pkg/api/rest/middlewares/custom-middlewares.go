@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -62,11 +63,37 @@ func Zerologger() echo.MiddlewareFunc {
 func CheckSession(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("session", c)
-		log.Debug().Msgf("sess.Values[authenticated]: %v", sess.Values["authenticated"])
-		log.Debug().Msgf("sess.Values[name]: %v", sess.Values["name"])
-		if sess.Values["authenticated"] != true {
+
+		expiredTime, ok := sess.Values["expired-time"].(string)
+		if !ok {
+			log.Error().Msg("failed to cast sess.Values[expired-time] as string")
+			// Delete session if it's expired
+			sess.Options.MaxAge = -1 //
+			sess.Save(c.Request(), c.Response())
 			return c.Redirect(http.StatusSeeOther, "/")
 		}
+		log.Debug().Msgf("sess.Values[expired-time] %v", expiredTime)
+
+		expires, err := time.Parse(time.RFC3339, expiredTime)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to parse expiredTime")
+			// Delete session if it's expired
+			sess.Options.MaxAge = -1 //
+			sess.Save(c.Request(), c.Response())
+			return c.Redirect(http.StatusSeeOther, "/")
+		}
+
+		if time.Now().After(expires) {
+			log.Info().Msg("session expired")
+			// Delete session if it's expired
+			sess.Options.MaxAge = -1 //
+			sess.Save(c.Request(), c.Response())
+			return c.Redirect(http.StatusSeeOther, "/")
+		}
+
+		log.Debug().Msgf("sess.Values[authenticated]: %v", sess.Values["authenticated"])
+		log.Debug().Msgf("sess.Values[name]: %v", sess.Values["name"])
+
 		return next(c)
 	}
 }
