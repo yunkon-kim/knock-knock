@@ -59,7 +59,7 @@ func RunFrontendServer(port string) {
 
 	e.Use(middleware.Recover())
 	// limit the application to 20 requests/sec using the default in-memory store
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(30)))
 
 	// // Path normalization middleware, which handles like main an main.html as the same path
 	// e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -83,15 +83,22 @@ func RunFrontendServer(port string) {
 	e.Renderer = renderer
 
 	// Middleware for session management
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(key))))
+	// Options stores configuration for a session or session store.
+	// Fields are a subset of http.Cookie fields.
+	// https://pkg.go.dev/github.com/gorilla/sessions@v1.2.1#Options
+	store := sessions.NewCookieStore([]byte(key))
+	// store.MaxAge(60 * 30)
+	e.Use(session.Middleware(store))
 
 	// Routes
 	routes.Auth(e)
 
 	g := e.Group("/kk")
 	g.Use(middlewares.CheckSession)
-
 	routes.Main(g)
+
+	svc := g.Group("/svc")
+	routes.SecurityGroup(svc)
 
 	//
 	frontendUrl := " http://localhost:8888/"

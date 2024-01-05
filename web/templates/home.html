@@ -139,7 +139,25 @@
 
           <div class="menu-inner-shadow"></div>
 
-          {{ template "menu.html" . }}
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item active">
+                <a href="home.html" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Analytics">Home</div>
+                </a>
+            </li>
+        
+            <!-- Access Control -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Access Control</span></li>
+            <!-- Security Group -->
+            <li class="menu-item">
+                <a href="security-group.html" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-table"></i>
+                    <div data-i18n="Tables">Security Group</div>
+                </a>
+            </li>            
+          </ul>
         </aside>
         <!-- / Menu -->
 
@@ -701,6 +719,7 @@
     </div>
     <!-- / Layout wrapper -->
 
+{{/*
     <div class="buy-now">
       <a
         href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
@@ -708,7 +727,9 @@
         class="btn btn-danger btn-buy-now"
         >Upgrade to Pro</a
       >
-    </div>
+    </div> 
+*/}}
+
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->

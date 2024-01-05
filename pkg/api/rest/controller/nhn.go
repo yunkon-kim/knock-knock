@@ -204,7 +204,7 @@ func CreateSecurityGroupRule(c echo.Context) error {
 	// Get path params, query params and/or the request body
 	req := new(nhnutil.SecurityGroupRule)
 	if err := c.Bind(req); err != nil {
-		log.Error().Err(err).Msg("Failed to bind request")
+		log.Error().Err(err).Msg("")
 		errMsg := err.Error()
 		return c.JSON(http.StatusBadRequest, model.BasicResponse{
 			Result: "",
@@ -214,7 +214,7 @@ func CreateSecurityGroupRule(c echo.Context) error {
 
 	rule, err := nhnutil.CreateSecurityGroupRule(nhnutil.KR1, *req)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to create a rule to security group")
+		log.Error().Err(err).Msg("")
 		errMsg := err.Error()
 		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
 			Result: "",
@@ -222,7 +222,18 @@ func CreateSecurityGroupRule(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, rule)
+	createRule := new(AddSecurityGroupRuleResponse)
+	err = json.Unmarshal([]byte(rule), &createRule)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusCreated, createRule)
 }
 
 // DeleteSecurityGroupRule godoc

@@ -133,10 +133,24 @@ type SecurityGroupDetails struct {
 }
 
 type SecurityGroupRule struct {
-	SecurityGroupRule SecurityGroupRuleDetails `json:"security_group_rule"`
+	SecurityGroupRule SecurityGroupRuleDetailsExt `json:"security_group_rule"`
 }
 
 type SecurityGroupRuleDetails struct {
+	Direction       string  `json:"direction" default:"ingress"`
+	Protocol        string  `json:"protocol" default:"tcp"`
+	Description     string  `json:"description"`
+	PortRangeMax    int     `json:"port_range_max"`
+	Id              string  `json:"id,omitempty"`
+	RemoteGroupId   *string `json:"remote_group_id,omitempty"`
+	RemoteIpPrefix  string  `json:"remote_ip_prefix"`
+	SecurityGroupId string  `json:"security_group_id"`
+	TenantId        string  `json:"tenant_id,omitempty"`
+	PortRangeMin    int     `json:"port_range_min"`
+	Ethertype       string  `json:"ethertype"`
+}
+
+type SecurityGroupRuleDetailsExt struct {
 	Direction       string `json:"direction" default:"ingress"`
 	Protocol        string `json:"protocol" default:"tcp"`
 	Description     string `json:"description"`
@@ -148,6 +162,10 @@ type SecurityGroupRuleDetails struct {
 	TenantId        string `json:"tenant_id,omitempty"`
 	PortRangeMin    int    `json:"port_range_min"`
 	Ethertype       string `json:"ethertype"`
+	UpdatedAt       string `json:"updated_at,omitempty"`
+	RevisionNumber  int    `json:"revision_number,omitempty"`
+	CreatedAt       string `json:"created_at,omitempty"`
+	ProjectId       string `json:"project_id,omitempty"`
 }
 
 var (
@@ -178,7 +196,7 @@ func init() {
 	SetTokenId()
 }
 
-func checkResponse(resp *resty.Response) error {
+func CheckResponse(resp *resty.Response) error {
 	if resp.StatusCode() < http.StatusOK || resp.StatusCode() >= http.StatusMultipleChoices {
 		errMsg := fmt.Sprintf("API call failed with status code: %d, body: %s", resp.StatusCode(), resp.String())
 		log.Error().Msg(errMsg)
@@ -220,7 +238,7 @@ func GetToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := checkResponse(resp); err != nil {
+	if err := CheckResponse(resp); err != nil {
 		return "", err
 	}
 
@@ -284,14 +302,14 @@ func GetSecurityGroups(region Region) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := checkResponse(resp); err != nil {
+	if err := CheckResponse(resp); err != nil {
 		return "", err
 	}
 
 	// Print result
 	log.Info().Msg("Successfully got security group")
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
-	log.Debug().Msgf("Response Body: %s", resp.String())
+	log.Trace().Msgf("Response Body: %s", resp.String())
 
 	return resp.String(), nil
 }
@@ -314,7 +332,7 @@ func GetSecurityGroup(region Region, securityGroupId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := checkResponse(resp); err != nil {
+	if err := CheckResponse(resp); err != nil {
 		return "", err
 	}
 
@@ -354,14 +372,14 @@ func CreateSecurityGroupRule(region Region, rule SecurityGroupRule) (string, err
 	if err != nil {
 		return "", err
 	}
-	if err := checkResponse(resp); err != nil {
+	if err := CheckResponse(resp); err != nil {
 		return "", err
 	}
 
 	// Print result
 	log.Info().Msg("Successfully created security group rule")
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
-	log.Debug().Msgf("Response Body: %s", resp.String())
+	log.Trace().Msgf("Response Body: %s", resp.String())
 
 	return resp.String(), nil
 }
@@ -385,7 +403,7 @@ func DeleteSecurityGroupRule(region Region, securityGroupRuleId string) error {
 	if err != nil {
 		return err
 	}
-	if err := checkResponse(resp); err != nil {
+	if err := CheckResponse(resp); err != nil {
 		return err
 	}
 

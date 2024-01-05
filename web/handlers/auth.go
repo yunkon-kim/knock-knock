@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/sessions"
@@ -18,6 +19,8 @@ import (
 	"github.com/rs/zerolog/log"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 	"golang.org/x/oauth2"
+
+	"github.com/gookit/goutil"
 )
 
 var (
@@ -29,6 +32,8 @@ var (
 	// Session store의 키 값
 	// TODO: randomize it
 	key = []byte("super-secret-key")
+
+	maxAge = 60 * 30 // 30 minutes
 )
 
 func init() {
@@ -43,6 +48,10 @@ func init() {
 		},
 	}
 
+}
+
+func Index(c echo.Context) error {
+	return c.Render(http.StatusOK, "index.html", nil)
 }
 
 func LoginKeycloak(c echo.Context) error {
@@ -76,29 +85,58 @@ func AuthCallback(c echo.Context) error {
 	// Get claims
 	claims, ok := jwtToken.Claims.(jwt.MapClaims) // by default claims is of type `jwt.MapClaims`
 	if !ok {
+		log.Error().Msgf("failed to cast claims as jwt.MapClaims")
 		c.String(http.StatusUnauthorized, "failed to cast claims as jwt.MapClaims")
+	}
+
+	roles := parseRealmRoles(claims)
+
+	// Check this user's role
+	var role = ""
+	if goutil.Contains(roles, "maintainer") {
+		role = "Maintainer"
+	} else if goutil.Contains(roles, "admin") {
+		role = "Admin"
+	} else if goutil.Contains(roles, "user") {
+		role = "User"
+	} else {
+		role = "Guest"
 	}
 
 	// Set session
 	sess, _ := session.Get("session", c)
-
-	// Options stores configuration for a session or session store.
-	// Fields are a subset of http.Cookie fields.
-	// https://pkg.go.dev/github.com/gorilla/sessions@v1.2.1#Options
+	log.Debug().Msgf("sess: %+v", sess)
 	sess.Options = &sessions.Options{
 		Path:     "/",
-		MaxAge:   86400 * 7,
+		MaxAge:   maxAge,
 		HttpOnly: true,
 	}
+
 	// Set user as authenticated
 	sess.Values["authenticated"] = true
 	// Set user name
 	sess.Values["name"] = claims["name"]
+	sess.Values["role"] = role
+	eTime := time.Now().Add(time.Duration(maxAge) * time.Second)
+	eTimeStr := eTime.Format(time.RFC3339)
+	sess.Values["expired-time"] = eTimeStr
 	// Set more values here
 	// ...
 	sess.Save(c.Request(), c.Response())
 
-	return c.Redirect(http.StatusFound, "http://localhost:8888/kk/home.html")
+	// Set cookie
+	cookie := new(http.Cookie)
+	cookie.Name = "name"
+	cookie.Value = claims["name"].(string)
+	cookie.Name = "role"
+	cookie.Value = role
+	cookie.Path = "/"
+	cookie.HttpOnly = false
+	log.Debug().Msgf("cookie: %+v", cookie)
+
+	c.SetCookie(cookie)
+
+	return c.Redirect(http.StatusFound, "/kk/home.html")
 }
 
 // parseKeycloakRSAPublicKey parses the RSA public key from the base64 string.
@@ -132,4 +170,17 @@ func getKey(token *jwt.Token) (interface{}, error) {
 	}
 
 	return pubkey, nil
+}
+
+func parseRealmRoles(claims jwt.MapClaims) []string {
+	var realmRoles []string = make([]string, 0)
+
+	if claim, ok := claims["realm_access"]; ok {
+		if roles, ok := claim.(map[string]interface{})["roles"]; ok {
+			for _, role := range roles.([]interface{}) {
+				realmRoles = append(realmRoles, role.(string))
+			}
+		}
+	}
+	return realmRoles
 }
