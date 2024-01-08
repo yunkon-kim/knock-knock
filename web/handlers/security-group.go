@@ -28,9 +28,16 @@ func CreateRule(c echo.Context) error {
 	// API endpoint
 	apiURL := "http://localhost:8056/knock-knock/nhn/sgRule"
 
+	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
 	// Create rule
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
+		SetAuthToken(token).
 		SetBody(ruleData).
 		Post(apiURL)
 
@@ -67,13 +74,21 @@ func DeleteRule(c echo.Context) error {
 	}
 	log.Debug().Msgf("ruleID: %s", ruleID)
 
+	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
 	client := resty.New()
 
 	// API endpoint
 	apiURL := "http://localhost:8056/knock-knock/nhn/sgRule/" + ruleID
 
 	// Delete rule
-	resp, err := client.R().Delete(apiURL)
+	resp, err := client.R().
+		SetAuthToken(token).
+		Delete(apiURL)
 
 	if err != nil {
 		log.Error().Err(err).Msg("")

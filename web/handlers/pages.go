@@ -16,12 +16,19 @@ func Dashboard(c echo.Context) error {
 
 func SecurityGroup(c echo.Context) error {
 
+	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
 	client := resty.New()
 	apiURL := "http://localhost:8056/knock-knock/nhn/sg"
 
 	// Get security groups
 	resp, err := client.R().
 		SetHeader("Accept", "application/json").
+		SetAuthToken(token).
 		Get(apiURL)
 
 	if err != nil {
@@ -41,8 +48,6 @@ func SecurityGroup(c echo.Context) error {
 		log.Error().Err(err).Msg("failed to unmarshal security groups")
 		return err
 	}
-
-	
 
 	return c.Render(http.StatusOK, "security-group.html", sgList)
 }

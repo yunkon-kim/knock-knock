@@ -16,6 +16,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
@@ -52,7 +53,16 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 
 func RunFrontendServer(port string) {
 
+	projectRoot := viper.GetString("knockknock.root")
+
 	e := echo.New()
+	// Middleware for session management
+	// Options stores configuration for a session or session store.
+	// Fields are a subset of http.Cookie fields.
+	// https://pkg.go.dev/github.com/gorilla/sessions@v1.2.1#Options
+	store := sessions.NewCookieStore([]byte(key))
+	// store.MaxAge(60 * 30)
+	e.Use(session.Middleware(store))
 
 	// Custom logger middleware with zerolog
 	e.Use(middlewares.Zerologger())
@@ -73,28 +83,20 @@ func RunFrontendServer(port string) {
 
 	// Static files
 	// e.Static("/html", "../../web/templates")
-	e.Static("/assets", "../../web/assets")
-	e.Static("/fonts", "../../web/fonts")
+	e.Static("/assets", projectRoot+"/web/assets")
+	e.Static("/fonts", projectRoot+"/web/fonts")
 
 	// Templates
 	renderer := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob("../../web/templates/*.html")),
+		templates: template.Must(template.ParseGlob(projectRoot + "/web/templates/*.html")),
 	}
 	e.Renderer = renderer
-
-	// Middleware for session management
-	// Options stores configuration for a session or session store.
-	// Fields are a subset of http.Cookie fields.
-	// https://pkg.go.dev/github.com/gorilla/sessions@v1.2.1#Options
-	store := sessions.NewCookieStore([]byte(key))
-	// store.MaxAge(60 * 30)
-	e.Use(session.Middleware(store))
 
 	// Routes
 	routes.Auth(e)
 
 	g := e.Group("/kk")
-	g.Use(middlewares.CheckSession)
+	g.Use(middlewares.SessionChecker)
 	routes.Main(g)
 
 	svc := g.Group("/svc")

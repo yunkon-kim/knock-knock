@@ -13,7 +13,6 @@ import (
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/route"
 
-	"crypto/subtle"
 	"fmt"
 	"os"
 
@@ -73,7 +72,10 @@ const (
 
 // @BasePath /knock-knock
 
-// @securityDefinitions.basic BasicAuth
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token (get token in http://localhost:8056/auth)
 func RunServer(port string) {
 
 	log.Info().Msg("Setting Knock-knock REST API server")
@@ -119,24 +121,24 @@ func RunServer(port string) {
 	apiPass := viper.GetString("api.password")
 
 	if enableAuth {
-		e.Use(middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
-			// Skip authentication for some routes that do not require authentication
-			Skipper: func(c echo.Context) bool {
-				if c.Path() == "/knock-knock/health" ||
-					c.Path() == "/knock-knock/httpVersion" {
-					return true
-				}
-				return false
-			},
-			Validator: func(username, password string, c echo.Context) (bool, error) {
-				// Be careful to use constant time comparison to prevent timing attacks
-				if subtle.ConstantTimeCompare([]byte(username), []byte(apiUser)) == 1 &&
-					subtle.ConstantTimeCompare([]byte(password), []byte(apiPass)) == 1 {
-					return true, nil
-				}
-				return false, nil
-			},
-		}))
+		// e.Use(middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
+		// 	// Skip authentication for some routes that do not require authentication
+		// 	Skipper: func(c echo.Context) bool {
+		// 		if c.Path() == "/knock-knock/health" ||
+		// 			c.Path() == "/knock-knock/httpVersion" {
+		// 			return true
+		// 		}
+		// 		return false
+		// 	},
+		// 	Validator: func(username, password string, c echo.Context) (bool, error) {
+		// 		// Be careful to use constant time comparison to prevent timing attacks
+		// 		if subtle.ConstantTimeCompare([]byte(username), []byte(apiUser)) == 1 &&
+		// 			subtle.ConstantTimeCompare([]byte(password), []byte(apiPass)) == 1 {
+		// 			return true, nil
+		// 		}
+		// 		return false, nil
+		// 	},
+		// }))
 	}
 
 	fmt.Println("\n \n ")
@@ -148,6 +150,8 @@ func RunServer(port string) {
 
 	// Route for system management
 	e.GET("/knock-knock/swagger/*", echoSwagger.WrapHandler)
+	e.GET("/auth", controller.LoginKeycloak)
+	e.GET("/auth/callback", controller.DisplayToken)
 
 	// Knock API group which has /knock-knock as prefix
 	groupBase := e.Group("/knock-knock")
@@ -155,6 +159,7 @@ func RunServer(port string) {
 
 	// NHN Cloud API group
 	groupNHN := groupBase.Group("/nhn")
+	groupNHN.Use(middlewares.JWTAuth())
 	route.RegisterNHNRoutes(groupNHN)
 
 	// Sample API group (for developers to add new API)

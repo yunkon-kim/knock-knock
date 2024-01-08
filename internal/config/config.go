@@ -37,14 +37,21 @@ func Init() {
 
 	// Values set in runtime
 	if viper.GetString("knockknock.root") == "" {
-		log.Println("knockknock.root is not set in config file or environment variable")
-
 		log.Println("find project root by using project name")
+
 		projectName := "knock-knock"
-		projectRoot, err := findProjectRoot(projectName)
+		// Get the executable path
+		execPath, err := os.Executable()
 		if err != nil {
-			log.Fatalf("Error finding project root directory: %v", err)
+			log.Fatalf("Error getting executable path: %v", err)
 		}
+		execDir := filepath.Dir(execPath)
+		projectRoot, err := checkProjectRootInParentDirectory(projectName, execDir)
+		if err != nil {
+			log.Printf("set current directory as project root directory (%v)", err)
+			projectRoot = execDir
+		}
+		log.Printf("project root directory: %s\n", projectRoot)
 		// Set the binary path
 		viper.Set("knockknock.root", projectRoot)
 		viper.Set("apidoc.path", projectRoot+"/pkg/api/rest/docs/swagger.json")
@@ -55,25 +62,18 @@ func Init() {
 	recursivePrintMap(settings, "")
 }
 
-func findProjectRoot(projectName string) (string, error) {
-	// Get the executable path
-	execPath, err := os.Executable()
-	if err != nil {
-		log.Fatalf("Error getting executable path: %v", err)
-	}
-	execDir := filepath.Dir(execPath)
+func checkProjectRootInParentDirectory(projectName string, execDir string) (string, error) {
 
-	// find last index of project name
-	index := strings.LastIndex(execDir, projectName)
+	// Append a path separator to the project name for accurate matching
+	projectNameWithSeparator := projectName + string(filepath.Separator)
+	// Find the last index of the project name with the separator
+	index := strings.LastIndex(execDir, projectNameWithSeparator)
 	if index == -1 {
-		log.Println("project name not found the path")
-		return "", errors.New("proejct name not found in the path")
+		return "", errors.New("project name not found in the path")
 	}
 
-	// Cut the string up to the index
-	result := execDir[:index+len(projectName)]
-
-	log.Printf("project root directory: %s\n", result)
+	// Cut the string up to the index + length of the project name
+	result := execDir[:index+len(projectNameWithSeparator)-1]
 
 	return result, nil
 }
