@@ -98,6 +98,7 @@ type GetSecurityGroupsResponse struct {
 // @Failure 401 {object} model.BasicResponse "Unauthorized"
 // @Failure 404 {object} model.BasicResponse "Not Found"
 // @Router /nhn/sg [get]
+// @Security Bearer
 func GetSecurityGroups(c echo.Context) error {
 
 	securityGroups, err := nhnutil.GetSecurityGroups(nhnutil.KR1)

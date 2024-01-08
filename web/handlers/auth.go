@@ -103,9 +103,23 @@ func AuthCallback(c echo.Context) error {
 		role = "Guest"
 	}
 
+	// Get expiry time from claims
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		// If the exp claim is missing or not of the expected type
+		log.Debug().Msgf("Unable to find or parse expiry time from token")
+		return c.String(http.StatusNotFound, "Unable to find or parse expiry time from token")
+	}
+	expiryTime := time.Unix(int64(exp), 0)         // Unix time
+	expiredTime := expiryTime.Format(time.RFC3339) // RFC3339 time
+
 	// Set session
-	sess, _ := session.Get("session", c)
-	log.Debug().Msgf("sess: %+v", sess)
+	sess, err := session.Get("session", c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.String(http.StatusInternalServerError, "/")
+	}
+
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   maxAge,
@@ -114,27 +128,46 @@ func AuthCallback(c echo.Context) error {
 
 	// Set user as authenticated
 	sess.Values["authenticated"] = true
+	sess.Values["token"] = jwtToken.Raw
 	// Set user name
 	sess.Values["name"] = claims["name"]
 	sess.Values["role"] = role
-	eTime := time.Now().Add(time.Duration(maxAge) * time.Second)
-	eTimeStr := eTime.Format(time.RFC3339)
-	sess.Values["expired-time"] = eTimeStr
+	sess.Values["expired-time"] = expiredTime
 	// Set more values here
 	// ...
-	sess.Save(c.Request(), c.Response())
+
+	// for key, value := range sess.Values {
+	// 	log.Debug().Msgf("Key: %s, Value: %v", key, value)
+	// }
+
+	err = sess.Save(c.Request(), c.Response())
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
 
 	// Set cookie
-	cookie := new(http.Cookie)
-	cookie.Name = "name"
-	cookie.Value = claims["name"].(string)
-	cookie.Name = "role"
-	cookie.Value = role
-	cookie.Path = "/"
-	cookie.HttpOnly = false
-	log.Debug().Msgf("cookie: %+v", cookie)
+	// Set cookie for username
+	nameCookie := &http.Cookie{
+		Name:     "name",
+		Value:    claims["name"].(string),
+		Path:     "/",
+		HttpOnly: false,
+	}
+	c.SetCookie(nameCookie)
 
-	c.SetCookie(cookie)
+	// Set cookie for role
+	roleCookie := &http.Cookie{
+		Name:     "role",
+		Value:    role,
+		Path:     "/",
+		HttpOnly: false,
+	}
+	c.SetCookie(roleCookie)
+
+	// logging
+	log.Debug().Msgf("Name cookie: %+v", nameCookie)
+	log.Debug().Msgf("Role cookie: %+v", roleCookie)
 
 	return c.Redirect(http.StatusFound, "/kk/home.html")
 }
