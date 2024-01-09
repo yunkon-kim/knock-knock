@@ -18,6 +18,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/rs/zerolog/log"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
+	"github.com/yunkon-kim/knock-knock/internal/slack"
 	"golang.org/x/oauth2"
 
 	"github.com/gookit/goutil"
@@ -168,6 +169,8 @@ func AuthCallback(c echo.Context) error {
 	// logging
 	log.Debug().Msgf("Name cookie: %+v", nameCookie)
 	log.Debug().Msgf("Role cookie: %+v", roleCookie)
+
+	slack.PostMessage(fmt.Sprintf("%s logged in", claims["name"]))
 
 	return c.Redirect(http.StatusFound, "/kk/home.html")
 }

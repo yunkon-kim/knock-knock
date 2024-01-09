@@ -31,3 +31,25 @@ func getTokenFromSession(c echo.Context) (string, error) {
 
 	return token, nil
 }
+
+func getUsernameFromSession(c echo.Context) (string, error) {
+
+	// get session
+	sess, err := session.Get("session", c)
+	if err != nil {
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "session retrieval failed")
+	}
+	log.Trace().Msgf("sess: %+v", sess)
+
+	// check type assertion
+	token, ok := sess.Values["name"].(string)
+	if !ok {
+		if sess.Values["name"] == nil {
+			return "", echo.NewHTTPError(http.StatusUnauthorized, "name is missing")
+		} else {
+			return "", echo.NewHTTPError(http.StatusUnauthorized, "invalid name format")
+		}
+	}
+
+	return token, nil
+}
