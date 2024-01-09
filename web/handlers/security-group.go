@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -9,6 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
+	"github.com/yunkon-kim/knock-knock/internal/slack"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/model"
 	"github.com/yunkon-kim/knock-knock/pkg/nhnutil"
 )
@@ -29,6 +31,12 @@ func CreateRule(c echo.Context) error {
 	apiURL := "http://localhost:8056/knock-knock/nhn/sgRule"
 
 	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	name, err := getUsernameFromSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("")
 		return c.JSON(http.StatusInternalServerError, err)
@@ -59,7 +67,14 @@ func CreateRule(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
+	prettyJSON, err := json.MarshalIndent(createdRule, "", "   ")
+	if err != nil {
+		log.Error().Err(err).Msgf("")
+	}
+
 	log.Debug().Msgf("createdRule: %+v", createdRule)
+
+	slack.PostMessage(fmt.Sprintf("The following rule is created by %s.\n\n```%v```", name, string(prettyJSON)))
 
 	return c.JSON(http.StatusOK, createdRule)
 }
@@ -75,6 +90,12 @@ func DeleteRule(c echo.Context) error {
 	log.Debug().Msgf("ruleID: %s", ruleID)
 
 	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	name, err := getUsernameFromSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("")
 		return c.JSON(http.StatusInternalServerError, err)
@@ -99,6 +120,8 @@ func DeleteRule(c echo.Context) error {
 		log.Error().Err(err).Msg("")
 		return c.JSON(resp.StatusCode(), err)
 	}
+
+	slack.PostMessage(fmt.Sprintf("The rule (id: `%s`) is successfully deleted by %s.", ruleID, name))
 
 	res := model.BasicResponse{
 		Result: "successfully deleted rule",

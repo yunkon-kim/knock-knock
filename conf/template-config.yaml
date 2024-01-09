@@ -72,3 +72,7 @@ nhncloud:
   domainName: default
   # url: https://api-compute.cloud.toast.com
   # appKey: AN_APP_KEY
+
+slack:
+  token: xoxb-61234xxxxxxxx
+  channelId: CXXXXXXXXXX
