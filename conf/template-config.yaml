@@ -56,12 +56,22 @@ keycloak:
   enabled: true
   serverUrl: AN_SERVER_URL # http://{your-keycloack-domain-or-ip:port}
   realm: A_REALM
-  clientId: A_CLIENT_ID
-  clientSecret: A_CLIENT_SECRET
   realmRS256PublicKey: A_REALM_RS256_PUBLIC_KEY
-  redirectUrl: A_REDIRECT_URL # http://{your-webserver-domain-or-ip:port}/auth/callback
   authUrl: AN_AUTH_URL # http://{your-keycloack-domain-or-ip:port}/realms/{your-realm}/protocol/openid-connect/auth
   tokenUrl: AN_TOKEN_URL # http://{your-keycloack-domain-or-ip:port}/realms/{your-realm}/protocol/openid-connect/token
+  # To be set once
+  clientId: A_CLIENT_ID 
+  clientSecret: A_CLIENT_SECRET
+  redirectUrl: A_REDIRECT_URL # http://{your-webserver-domain-or-ip:port}/auth/callback
+  # Or to be set for each frontend and backend
+  frontend:    
+    clientId: A_CLIENT_ID 
+    clientSecret: A_CLIENT_SECRET
+    redirectUrl: A_REDIRECT_URL # http://{your-webserver-domain-or-ip:port}/auth/callback
+  backend:
+    clientId: A_CLIENT_ID 
+    clientSecret: A_CLIENT_SECRET
+    redirectUrl: A_REDIRECT_URL # http://{your-webserver-domain-or-ip:port}/auth/callback
 
 nhncloud:
   identityEndpoint: https://api-identity-infrastructure.nhncloudservice.com

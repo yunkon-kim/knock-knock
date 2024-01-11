@@ -40,9 +40,9 @@ var (
 func init() {
 	// Keycloak OAuth2 configuration
 	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.clientId"),
-		ClientSecret: viper.GetString("keycloak.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.redirectURL"),
+		ClientID:     viper.GetString("keycloak.frontend.clientId"),
+		ClientSecret: viper.GetString("keycloak.frontend.clientSecret"),
+		RedirectURL:  viper.GetString("keycloak.frontend.redirectUrl"),
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  viper.GetString("keycloak.authURL"),
 			TokenURL: viper.GetString("keycloak.tokenURL"),

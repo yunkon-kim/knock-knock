@@ -163,8 +163,8 @@ func retrospectToken(c echo.Context) {
 	log.Debug().Msg("Start - retrospectToken, which is the SuccessHandler")
 
 	var baseUrl = viper.GetString("keycloak.serverUrl")
-	var clientID = viper.GetString("keycloak.clientId")
-	var clientSecret = viper.GetString("keycloak.clientSecret")
+	var clientID = viper.GetString("keycloak.backend.clientId")
+	var clientSecret = viper.GetString("keycloak.backend.clientSecret")
 	var realm = viper.GetString("keycloak.realm")
 
 	token, ok := c.Get("user").(*jwt.Token) // by default token is stored under `user` key
