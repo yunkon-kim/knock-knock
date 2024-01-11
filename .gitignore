@@ -17,7 +17,9 @@
 *.out
 
 # vendor dir
-vendor/
+!vendor/
+vendor/*
+
 
 # Binaries
 pkg/src
