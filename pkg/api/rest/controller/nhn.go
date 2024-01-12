@@ -277,6 +277,110 @@ func DeleteSecurityGroupRule(c echo.Context) error {
 	})
 }
 
+type GetNetworkACLsResponse struct {
+	nhnutil.NetworkACLs
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// GetNetworkACLs godoc
+// @Summary Get a list of network ACLs
+// @Description Get a list of network ACLs on NHN Cloud.
+// @Tags [NHN Cloud] Network ACL
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetNetworkACLsResponse "A list of network ACLs returned from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/acls [get]
+// @Security Bearer
+func GetNetworkACLs(c echo.Context) error {
+
+	acls, err := nhnutil.GetNetworkACLs(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get network ACLs")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get network ACLs",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no network ACLs",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.NetworkACLs)
+
+	err = json.Unmarshal([]byte(acls), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal network ACLs")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal network ACLs",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+type GetLoadBalancersResponse struct {
+	nhnutil.LoadBalancers
+}
+
+// GetLoadBalancers godoc
+// @Summary Get a list of load balancers
+// @Description Get a list of load balancers on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetLoadBalancersResponse "A list of load balancers returned from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs [get]
+// @Security Bearer
+func GetLoadBalancers(c echo.Context) error {
+
+	lbs, err := nhnutil.GetLoadBalancers(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get load balancers")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get load balancers",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no load balancers",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.LoadBalancers)
+
+	err = json.Unmarshal([]byte(lbs), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal load balancers")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal load balancers",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
 // // Struct Embedding is used to inherit the fields of security group
 // type UpdateSecurityGroupRequest struct {
 // 	SecurityGroupdId    string `json:"security_group_id"`
