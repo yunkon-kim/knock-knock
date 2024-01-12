@@ -414,3 +414,116 @@ func DeleteSecurityGroupRule(region Region, securityGroupRuleId string) error {
 
 	return nil
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// NOTICE: 2024-01-12, only KR2 region supports Network ACLs
+
+// Model for Network ACLs
+type NetworkACLs struct {
+	NetworkACL []NetworkACLDetails `json:"acls"`
+}
+
+type NetworkACLDetails struct {
+	Id             string `json:"id"`
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	TenantId       string `json:"tenant_id"`
+	CreatedAt      string `json:"created_at"`
+	UpdatedAt      string `json:"updated_at"`
+	RevisionNumber int    `json:"revision_number"`
+}
+
+// Get Networks ACLs
+func GetNetworkACLs(region Region) (string, error) {
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL for security groups
+	urlACLs := fmt.Sprintf("%s/v2.0/acls", apiEndpoint)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Get(urlACLs)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully got security group")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// Model for load balancer
+type LoadBalancers struct {
+	LoadBalancers []LoadBalancerDetails `json:"loadbalancers"`
+}
+
+type LoadBalancerDetails struct {
+	IpaclGroupAction   string       `json:"ipacl_group_action"`
+	Description        string       `json:"description"`
+	ProvisioningStatus string       `json:"provisioning_status"`
+	TenantID           string       `json:"tenant_id"`
+	Provider           string       `json:"provider"`
+	IpaclGroups        []IPACLGroup `json:"ipacl_groups"`
+	Name               string       `json:"name"`
+	LoadBalancerType   string       `json:"loadbalancer_type"`
+	Listeners          []Listener   `json:"listeners"`
+	VipAddress         string       `json:"vip_address"`
+	VipPortID          string       `json:"vip_port_id"`
+	WorkflowStatus     string       `json:"workflow_status"`
+	VipSubnetID        string       `json:"vip_subnet_id"`
+	Id                 string       `json:"id"`
+	OperatingStatus    string       `json:"operating_status"`
+	AdminStateUp       bool         `json:"admin_state_up"`
+}
+
+type IPACLGroup struct {
+	IpaclGroupId string `json:"ipacl_group_id"`
+}
+
+type Listener struct {
+	Id string `json:"id"`
+}
+
+// Get load balancers
+func GetLoadBalancers(region Region) (string, error) {
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL for security groups
+	urlLBs := fmt.Sprintf("%s/v2.0/lbaas/loadbalancers", apiEndpoint)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Get(urlLBs)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully got security group")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
