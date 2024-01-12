@@ -55,7 +55,7 @@
 
     <!-- Page CSS -->
     <style>
-      .rule-actions {
+      .ipacl-group-actions- {
         display: flex;
         justify-content: space-around; /* or 'flex-start' for left alignment */
         align-items: center;
@@ -155,16 +155,16 @@
             </li>
         
             <!-- Access Control -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Access Control</span></li>
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Network</span></li>
             <!-- Security Group -->
-            <li class="menu-item active">
+            <li class="menu-item">
                 <a href="security-group.html" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-table"></i>
                     <div data-i18n="Tables">Security Group</div>
                 </a>
             </li>
             <!-- Load Balancer -->
-            <li class="menu-item">
+            <li class="menu-item active">
               <a href="load-balancer.html" class="menu-link">
                   <i class="menu-icon tf-icons bx bx-table"></i>
                   <div data-i18n="Tables">Load Balancer</div>
@@ -184,7 +184,7 @@
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">NHN Cloud /</span> Security Groups</h4>
+              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">NHN Cloud /</span> Load Balancers</h4>
 
               <!-- Hoverable Table rows -->
               <div class="card">
@@ -196,34 +196,29 @@
                         <th>Name</th>
                         <th>ID</th>
                         <th>Description</th>
-                        <th>Rules (direction/protocal/port range/ethertype/remote ip prefix/description)</th>
-                        <th>Actions</th>
+                        <th>IP ACL Groups</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                      {{range .SecurityGroups}}
+                      {{range .LoadBalancers}}
                       <tr>
                         <td><strong>{{.Name}}</strong></td>
                         <td>{{.Id}}</td>
                         <td>{{if .Description}}{{.Description}}{{else}}-{{end}}</td>
-                        <td id="rules-container-{{.Id}}">
+                        <td id="lbs-container-{{.Id}}">
                           <!-- Loop through the security group rules -->
-                          {{range .SecurityGroupRules}}
-                          <div id="rule-element-{{.Id}}" class="d-flex justify-content-between align-items-center">
+                          {{range .IpaclGroups}}
+                          <div id="ipacl-group-element-{{.IpaclGroupId}}" class="d-flex justify-content-between align-items-center">
                             <div>
-                              {{.Direction}}/
-                              {{.Protocol}}/
-                              {{.PortRangeMin}} - {{.PortRangeMax}}/
-                              {{.Ethertype}}/
-                              {{.RemoteIpPrefix}}/
-                              {{.Description}}
+                              {{.IpaclGroupId}}
                             </div>
-                            <div class="rule-actions">
-                              <!-- Button trigger for deleting a rule -->
-                              <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rule-{{.Id}}" data-id="{{.Id}}">Delete Rule</button>
+                            <div class="ipacl-group-actions-">
+                              <!-- Button trigger for detaching ipacl-group -->
+                              <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#ipacl-group-{{.IpaclGroupId}}" data-id="{{.IpaclGroupId}}">Detach</button>
 
                               <!-- Modal -->
-                              <div class="modal fade" id="rule-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
+                              <div class="modal fade" id="ipacl-group-{{.IpaclGroupId}}" tabindex="-1" aria-hidden="true" data-id="{{.IpaclGroupId}}">
                                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                   <div class="modal-content">
                                     <div class="modal-header">
@@ -239,14 +234,14 @@
                                       <div class="row">
                                         <div class="col mb-3">
                                           <div class="alert alert-danger">
-                                            WARNING: Are you sure you want to delete this rule? This action cannot be undone.
+                                            WARNING: Are you sure you want to detach this rule?
                                           </div>
-                                          <label for="confirmText" class="form-label">To confirm deletion, type <i>delete</i> in the field:</label>
+                                          <label for="confirmText" class="form-label">To confirm detachment, type <i>detach</i> in the field:</label>
                                           <input
                                             type="text"
                                             id="confirmText"
                                             class="form-control"
-                                            placeholder="delete"
+                                            placeholder="detach"
                                           />
                                         </div>
                                       </div>
@@ -255,7 +250,7 @@
                                       <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                         Cancel
                                       </button>
-                                      <button type="button" class="btn btn-danger delete-rule-btn">Delete</button>
+                                      <button type="button" class="btn btn-danger detach-ipacl-group-btn">Delete</button>
                                     </div>
                                   </div>
                                 </div>
@@ -264,18 +259,19 @@
                           </div>
                           {{end}}
                         </td>
+
                         <td>
 
                           <!-- Button trigger modal for adding a rule to the group -->
-                          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#sg-{{.Id}}" data-id="{{.Id}}">Create Rule</button>
+                          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#lb-{{.Id}}" data-id="{{.Id}}">Attach Rule</button>
 
                           <!-- Modal -->
-                          <div class="modal fade" id="sg-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
+                          <div class="modal fade" id="lb-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                               <div class="modal-content">
 
                                 <div class="modal-header">
-                                  <h5 class="modal-title">Fill in this form to create a rule</h5>
+                                  <h5 class="modal-title">Fill in this form to attach IP ACL group</h5>
                                   <button
                                     type="button"
                                     class="btn-close"
@@ -283,7 +279,7 @@
                                     aria-label="Close"
                                   ></button>
                                 </div>
-
+                                <!-- 
                                 <div class="modal-body">
                                   <div class="row">
                                     <div class="col mb-3">
@@ -357,19 +353,20 @@
                                       />
                                     </div>
                                   </div>
-
+                                  -->
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                     Cancel
                                   </button>
-                                  <button type="button" class="btn btn-primary create-rule-btn">Create</button>
+                                  <button type="button" class="btn btn-primary attach-ipacl-group-btn">Attach</button>
                                 </div>
                               </div>
                             </div>
                           </div>
 
                         </td>
+                      
                       </tr>
                       {{end}}
                     </tbody>
@@ -439,175 +436,175 @@
         return ""; // if username is not in the cookie
       }
 
-      // Handling the 'create' button click
-      function handleCreateButtonClick() {
-        const groupId = this.closest('.modal').getAttribute('data-id');
-        const direction = document.getElementById('direction-' + groupId).value;
-        const protocol = document.getElementById('protocol-' + groupId).value;
-        const portRangeMin = document.getElementById('port-range-min-' + groupId).value;
-        const portRangeMax = document.getElementById('port-range-max-' + groupId).value;
-        const ethertype = document.getElementById('ethertype-' + groupId).value;
-        const remoteIpPrefix = document.getElementById('remote-ip-prefix-' + groupId).value;
-
-        console.log("groupId: " + groupId);
-        console.log("name: " + name);
-
-        // AJAX request to server for creating a rule
-        const data = {
-          "security_group_rule": {
-            "description": "set by " + name,
-            "direction": direction,
-            "ethertype": ethertype,
-            "id": "",
-            "port_range_max": parseInt(portRangeMin),
-            "port_range_min": parseInt(portRangeMax),
-            "protocol": protocol,
-            "remote_group_id": "",
-            "remote_ip_prefix": remoteIpPrefix,
-            "security_group_id": groupId,
-            "tenant_id": ""
-          }
-        };
-
-        fetch('/kk/svc/rule', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-          .then(response => {
-            console.log(response);
-            if (!response.ok) {
-              throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('data:');
-            console.log(data);
-            sgRule = data.security_group_rule;
-
-            // Constructing a new HTML element for the created rule
-            const newRuleHtml = `<div id="rule-element-${sgRule.id}" class="d-flex justify-content-between align-items-center">
-            <div>
-              ${sgRule.direction}/
-              ${sgRule.protocol}/
-              ${sgRule.port_range_min} - ${sgRule.port_range_max}/
-              ${sgRule.ethertype}/
-              ${sgRule.remote_ip_prefix}/
-              ${sgRule.description}
-            </div>
-            <div class="rule-actions">
-              <!-- Button trigger for deleting a rule -->
-              <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rule-${sgRule.id}" data-id="${sgRule.id}">Delete Rule</button>
-
-              <!-- Modal -->
-              <div class="modal fade" id="rule-${sgRule.id}" tabindex="-1" aria-hidden="true" data-id="${sgRule.id}">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Modal title</h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col mb-3">
-                          <div class="alert alert-danger">
-                            WARNING: Are you sure you want to delete this rule? This action cannot be undone.
-                          </div>
-                          <label for="confirmText" class="form-label">To confirm deletion, type <i>delete</i> in the field:</label>
-                          <input
-                            type="text"
-                            id="confirmText"
-                            class="form-control"
-                            placeholder="delete"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Cancel
-                      </button>
-                      <button type="button" class="btn btn-danger delete-rule-btn">Delete</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>`;
-            // Appending the new rule to the rules container
-            document.getElementById('rules-container-' + groupId).innerHTML += newRuleHtml;
-
-            // Bind the 'delete' click event to the new button
-            const newButton = document.querySelector('#rule-' + sgRule.id + ' .delete-rule-btn');
-            newButton.addEventListener('click', handleDeleteButtonClick);
-
-            // Close the modal using Bootstrap's JavaScript method
-            var createRuleModalElement = document.getElementById('sg-' + groupId);
-            var createRuleModal = bootstrap.Modal.getInstance(createRuleModalElement);
-            createRuleModal.hide();
-
-            // Reset the form          
-            document.getElementById('direction-' + groupId).value = '';
-            document.getElementById('protocol-' + groupId).value = '';
-            document.getElementById('port-range-min-' + groupId).value = '';
-            document.getElementById('port-range-max-' + groupId).value = '';
-            document.getElementById('ethertype-' + groupId).value = '';
-            document.getElementById('remote-ip-prefix-' + groupId).value = '';
-
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-            // Handle error response
-          });
+      // Handling the 'Attach' button click
+      function handleAttachButtonClick() {
+        // const groupId = this.closest('.modal').getAttribute('data-id');
+        // const direction = document.getElementById('direction-' + groupId).value;
+        // const protocol = document.getElementById('protocol-' + groupId).value;
+        // const portRangeMin = document.getElementById('port-range-min-' + groupId).value;
+        // const portRangeMax = document.getElementById('port-range-max-' + groupId).value;
+        // const ethertype = document.getElementById('ethertype-' + groupId).value;
+        // const remoteIpPrefix = document.getElementById('remote-ip-prefix-' + groupId).value;
+// 
+        // console.log("groupId: " + groupId);
+        // console.log("name: " + name);
+// 
+        // // AJAX request to server for creating a rule
+        // const data = {
+        //   "security_group_rule": {
+        //     "description": "set by " + name,
+        //     "direction": direction,
+        //     "ethertype": ethertype,
+        //     "id": "",
+        //     "port_range_max": parseInt(portRangeMin),
+        //     "port_range_min": parseInt(portRangeMax),
+        //     "protocol": protocol,
+        //     "remote_group_id": "",
+        //     "remote_ip_prefix": remoteIpPrefix,
+        //     "security_group_id": groupId,
+        //     "tenant_id": ""
+        //   }
+        // };
+// 
+        // fetch('/kk/svc/rule', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(data),
+        // })
+        //   .then(response => {
+        //     console.log(response);
+        //     if (!response.ok) {
+        //       throw new Error('Network response was not ok: ' + response.statusText);
+        //     }
+        //     return response.json();
+        //   })
+        //   .then(data => {
+        //     console.log('data:');
+        //     console.log(data);
+        //     sgRule = data.security_group_rule;
+// 
+        //     // Constructing a new HTML element for the created rule
+        //     const newRuleHtml = `<div id="ipacl-group-element-${sgRule.id}" class="d-flex justify-content-between align-items-center">
+        //     <div>
+        //       ${sgRule.direction}/
+        //       ${sgRule.protocol}/
+        //       ${sgRule.port_range_min} - ${sgRule.port_range_max}/
+        //       ${sgRule.ethertype}/
+        //       ${sgRule.remote_ip_prefix}/
+        //       ${sgRule.description}
+        //     </div>
+        //     <div class="ipacl-group-actions-">
+        //       <!-- Button trigger for deleting a rule -->
+        //       <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rule-${sgRule.id}" data-id="${sgRule.id}">Delete Rule</button>
+// 
+        //       <!-- Modal -->
+        //       <div class="modal fade" id="rule-${sgRule.id}" tabindex="-1" aria-hidden="true" data-id="${sgRule.id}">
+        //         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        //           <div class="modal-content">
+        //             <div class="modal-header">
+        //               <h5 class="modal-title">Modal title</h5>
+        //               <button
+        //                 type="button"
+        //                 class="btn-close"
+        //                 data-bs-dismiss="modal"
+        //                 aria-label="Close"
+        //               ></button>
+        //             </div>
+        //             <div class="modal-body">
+        //               <div class="row">
+        //                 <div class="col mb-3">
+        //                   <div class="alert alert-danger">
+        //                     WARNING: Are you sure you want to delete this rule? This action cannot be undone.
+        //                   </div>
+        //                   <label for="confirmText" class="form-label">To confirm deletion, type <i>delete</i> in the field:</label>
+        //                   <input
+        //                     type="text"
+        //                     id="confirmText"
+        //                     class="form-control"
+        //                     placeholder="delete"
+        //                   />
+        //                 </div>
+        //               </div>
+        //             </div>
+        //             <div class="modal-footer">
+        //               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+        //                 Cancel
+        //               </button>
+        //               <button type="button" class="btn btn-danger delete-rule-btn">Delete</button>
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>`;
+        //     // Appending the new rule to the rules container
+        //     document.getElementById('lbs-container-' + groupId).innerHTML += newRuleHtml;
+// 
+        //     // Bind the 'delete' click event to the new button
+        //     const newButton = document.querySelector('#rule-' + sgRule.id + ' .delete-rule-btn');
+        //     newButton.addEventListener('click', handleDeleteButtonClick);
+// 
+        //     // Close the modal using Bootstrap's JavaScript method
+        //     var createRuleModalElement = document.getElementById('sg-' + groupId);
+        //     var createRuleModal = bootstrap.Modal.getInstance(createRuleModalElement);
+        //     createRuleModal.hide();
+// 
+        //     // Reset the form          
+        //     document.getElementById('direction-' + groupId).value = '';
+        //     document.getElementById('protocol-' + groupId).value = '';
+        //     document.getElementById('port-range-min-' + groupId).value = '';
+        //     document.getElementById('port-range-max-' + groupId).value = '';
+        //     document.getElementById('ethertype-' + groupId).value = '';
+        //     document.getElementById('remote-ip-prefix-' + groupId).value = '';
+// 
+        //   })
+        //   .catch((error) => {
+        //     console.error('Error:', error);
+        //     // Handle error response
+        //   });
 
       }
 
-      // Handling the 'Delete' Button Click
-      function handleDeleteButtonClick() {
-        const ruleId = this.closest('.modal').getAttribute('data-id');
-        const confirmText = this.closest('.modal').querySelector('#confirmText').value;
-
-        console.log("ruleId: " + ruleId);
-
-        if (confirmText.toLowerCase() === 'delete') {
-          // AJAX request to server for deleting a rule
-          fetch('/kk/svc/rule/' + ruleId, {
-            method: 'DELETE'
-          })
-            .then(response => { // Processing the response
-              console.log(response);
-              if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-              }
-              return response.json();
-            })
-            .then(data => { // Handling success
-              console.log('data:');
-              console.log(data);
-
-              // Close the modal using Bootstrap's JavaScript method
-              var deleteRuleModalElement = document.getElementById('rule-' + ruleId);
-              var deleteRuleModal = bootstrap.Modal.getInstance(deleteRuleModalElement);
-              deleteRuleModal.hide();
-
-              // Handle success response
-              document.getElementById('rule-element-' + ruleId).remove();
-            })
-            .catch((error) => { // Error handling
-              console.error('Error:', error);
-              // Handle error response
-            });
-        } else {
-          alert('Confirmation text does not match. Please type "delete" to confirm.');
-        }
+      // Handling the 'Detach' Button Click
+      function handleDetachButtonClick() {
+        // const ruleId = this.closest('.modal').getAttribute('data-id');
+        // const confirmText = this.closest('.modal').querySelector('#confirmText').value;
+// 
+        // console.log("ruleId: " + ruleId);
+// 
+        // if (confirmText.toLowerCase() === 'delete') {
+        //   // AJAX request to server for deleting a rule
+        //   fetch('/kk/svc/rule/' + ruleId, {
+        //     method: 'DELETE'
+        //   })
+        //     .then(response => { // Processing the response
+        //       console.log(response);
+        //       if (!response.ok) {
+        //         throw new Error('Network response was not ok: ' + response.statusText);
+        //       }
+        //       return response.json();
+        //     })
+        //     .then(data => { // Handling success
+        //       console.log('data:');
+        //       console.log(data);
+// 
+        //       // Close the modal using Bootstrap's JavaScript method
+        //       var deleteRuleModalElement = document.getElementById('rule-' + ruleId);
+        //       var deleteRuleModal = bootstrap.Modal.getInstance(deleteRuleModalElement);
+        //       deleteRuleModal.hide();
+// 
+        //       // Handle success response
+        //       document.getElementById('ipacl-group-element-' + ruleId).remove();
+        //     })
+        //     .catch((error) => { // Error handling
+        //       console.error('Error:', error);
+        //       // Handle error response
+        //     });
+        // } else {
+        //   alert('Confirmation text does not match. Please type "delete" to confirm.');
+        // }
       }
 
     </script>
@@ -621,14 +618,14 @@
         document.getElementById("username").innerHTML = name;
         document.getElementById("role").innerHTML = role;
 
-        // Bind the 'create' button click event
-        document.querySelectorAll('.create-rule-btn').forEach(button => {
-          button.addEventListener('click', handleCreateButtonClick);
+        // Bind the 'attach' button click event
+        document.querySelectorAll('.attach-ipacl-group-btn').forEach(button => {
+          button.addEventListener('click', handleAttachButtonClick);
         });
 
-        // Bind the 'delete' button click event
-        document.querySelectorAll('.delete-rule-btn').forEach(button => {
-          button.addEventListener('click', handleDeleteButtonClick);
+        // Bind the 'detach' button click event
+        document.querySelectorAll('.detach-ipacl-group-btn').forEach(button => {
+          button.addEventListener('click', handleDetachButtonClick);
         });
 
       };

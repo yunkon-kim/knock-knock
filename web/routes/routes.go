@@ -17,6 +17,7 @@ func Auth(e *echo.Echo) {
 func Main(g *echo.Group) {
 	g.GET("/home.html", handlers.Dashboard)
 	g.GET("/security-group.html", handlers.SecurityGroup)
+	g.GET("/load-balancer.html", handlers.LoadBalancer)
 }
 
 func SecurityGroup(g *echo.Group) {
