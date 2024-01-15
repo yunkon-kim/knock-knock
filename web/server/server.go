@@ -101,6 +101,7 @@ func RunFrontendServer(port string) {
 
 	svc := g.Group("/svc")
 	routes.SecurityGroup(svc)
+	routes.IpACLGroup(svc)
 
 	//
 	frontendUrl := " http://localhost:8888/"

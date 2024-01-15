@@ -1,6 +1,8 @@
 default:
 	cd cmd/knock-knock && $(MAKE)
 
+all: swag default run
+
 cc:
 	cd cmd/knock-knock && $(MAKE)
 

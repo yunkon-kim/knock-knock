@@ -18,9 +18,21 @@ func Main(g *echo.Group) {
 	g.GET("/home.html", handlers.Dashboard)
 	g.GET("/security-group.html", handlers.SecurityGroup)
 	g.GET("/load-balancer.html", handlers.LoadBalancer)
+	g.GET("/ip-acl-group.html", handlers.IpACLGroup)
 }
 
 func SecurityGroup(g *echo.Group) {
 	g.POST("/rule", handlers.CreateRule)
 	g.DELETE("/rule/:id", handlers.DeleteRule)
+}
+
+func IpACLGroup(g *echo.Group) {
+	// IP access control list group
+	g.POST("/ipacl-groups", handlers.CreateIpACLGroup)
+
+	// IP access control list target
+	g.GET("/ipacl-targets/:ipacl-group-id", handlers.GetIpACLTarget)
+	g.POST("/ipacl-targets", handlers.CreateIpACLTarget)
+	g.DELETE("/ipacl-targets/:ipacl-target-id", handlers.DeleteIpACLTarget)
+
 }

@@ -472,30 +472,71 @@ type LoadBalancers struct {
 }
 
 type LoadBalancerDetails struct {
-	IpaclGroupAction   string       `json:"ipacl_group_action"`
-	Description        string       `json:"description"`
-	ProvisioningStatus string       `json:"provisioning_status"`
-	TenantID           string       `json:"tenant_id"`
-	Provider           string       `json:"provider"`
-	IpaclGroups        []IPACLGroup `json:"ipacl_groups"`
-	Name               string       `json:"name"`
-	LoadBalancerType   string       `json:"loadbalancer_type"`
-	Listeners          []Listener   `json:"listeners"`
-	VipAddress         string       `json:"vip_address"`
-	VipPortID          string       `json:"vip_port_id"`
-	WorkflowStatus     string       `json:"workflow_status"`
-	VipSubnetID        string       `json:"vip_subnet_id"`
-	Id                 string       `json:"id"`
-	OperatingStatus    string       `json:"operating_status"`
-	AdminStateUp       bool         `json:"admin_state_up"`
+	IpaclGroupAction   string         `json:"ipacl_group_action"`
+	Description        string         `json:"description"`
+	ProvisioningStatus string         `json:"provisioning_status"`
+	TenantID           string         `json:"tenant_id"`
+	Provider           string         `json:"provider"`
+	IpaclGroups        []IPACLGroupId `json:"ipacl_groups"`
+	Name               string         `json:"name"`
+	LoadBalancerType   string         `json:"loadbalancer_type"`
+	Listeners          []Listener     `json:"listeners"`
+	VipAddress         string         `json:"vip_address"`
+	VipPortID          string         `json:"vip_port_id"`
+	WorkflowStatus     string         `json:"workflow_status"`
+	VipSubnetID        string         `json:"vip_subnet_id"`
+	Id                 string         `json:"id"`
+	OperatingStatus    string         `json:"operating_status"`
+	AdminStateUp       bool           `json:"admin_state_up"`
 }
 
-type IPACLGroup struct {
+type IPACLGroupId struct {
 	IpaclGroupId string `json:"ipacl_group_id"`
 }
 
 type Listener struct {
 	Id string `json:"id"`
+}
+
+// Models for IP ACL groups
+type IPACLGroups struct {
+	IpaclGroups []IPACLGroupDetails `json:"ipacl_groups"`
+}
+
+type IPACLGroup struct {
+	IpaclGroup IPACLGroupDetails `json:"ipacl_group"`
+}
+
+type IPACLGroupDetails struct {
+	IpaclTargetCount string           `json:"ipacl_target_count,omitempty"`
+	Description      string           `json:"description,omitempty"`
+	LoadBalancers    []LoadBalancerId `json:"loadbalancers,omitempty"`
+	TenantId         string           `json:"tenant_id,omitempty"`
+	Action           string           `json:"action,omitempty"`
+	Id               string           `json:"id,omitempty"`
+	Name             string           `json:"name,omitempty"`
+}
+
+type LoadBalancerId struct {
+	LoadBalancerId string `json:"loadbalancer_id"`
+}
+
+// Models for IP ACl targets
+
+type IPACLTargets struct {
+	IpaclTargets []IPACLTargetDetails `json:"ipacl_targets"`
+}
+
+type IPACLTarget struct {
+	IpaclTarget IPACLTargetDetails `json:"ipacl_target"`
+}
+
+type IPACLTargetDetails struct {
+	IpaclGroupId string `json:"ipacl_group_id"`
+	TenantId     string `json:"tenant_id,omitempty"`
+	CIDRAddress  string `json:"cidr_address"`
+	Description  string `json:"description"`
+	Id           string `json:"id,omitempty"`
 }
 
 // Get load balancers
@@ -526,4 +567,177 @@ func GetLoadBalancers(region Region) (string, error) {
 	log.Trace().Msgf("Response Body: %s", resp.String())
 
 	return resp.String(), nil
+}
+
+// Get IP access control list groups (IP ACL groups)
+func GetIpACLGroups(region Region) (string, error) {
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLGroups := fmt.Sprintf("%s/v2.0/lbaas/ipacl-groups", apiEndpoint)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Get(urlIpACLGroups)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully got IP access control list groups (IP ACL groups)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
+
+// Create an IP access control list group (IP ACL group)
+func CreateIpACLGroup(region Region, group IPACLGroup) (string, error) {
+
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLGroups := fmt.Sprintf("%s/v2.0/lbaas/ipacl-groups", apiEndpoint)
+
+	// Set request body
+	reqJsonBytes, err := json.Marshal(group)
+	log.Debug().Msgf("Request Body: %s", reqJsonBytes)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to marshal JSON")
+		return "", err
+	}
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		SetBody(reqJsonBytes).
+		Post(urlIpACLGroups)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully created IP access control list group (IP ACL group)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
+
+// Get IP access control list targets (IP ACL targets)
+func GetIpACLTargets(region Region) (string, error) {
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLTargets := fmt.Sprintf("%s/v2.0/lbaas/ipacl-targets", apiEndpoint)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Get(urlIpACLTargets)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully got IP access control list targets (IP ACL targets)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
+
+// Create IP access control list target (IP ACL target)
+func CreateIpACLTarget(region Region, target IPACLTarget) (string, error) {
+
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLTargets := fmt.Sprintf("%s/v2.0/lbaas/ipacl-targets", apiEndpoint)
+
+	// Set request body
+	reqJsonBytes, err := json.Marshal(target)
+	log.Debug().Msgf("Request Body: %s", reqJsonBytes)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to marshal JSON")
+		return "", err
+	}
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		SetBody(reqJsonBytes).
+		Post(urlIpACLTargets)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully created IP access control list target (IP ACL target)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+
+}
+
+// Delete IP access control list target (IP ACL target)
+func DeleteIpACLTarget(region Region, targetId string) error {
+
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLTarget := fmt.Sprintf("%s/v2.0/lbaas/ipacl-targets/%s", apiEndpoint, targetId)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Delete(urlIpACLTarget)
+
+	if err != nil {
+		return err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully created IP access control list target (IP ACL target)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return nil
+
 }
