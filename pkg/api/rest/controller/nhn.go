@@ -493,6 +493,45 @@ func CreateIpACLGroup(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
+// DeleteIpACLGroup godoc
+// @Summary Delete an IP access control list group (IP ACL group)
+// @Description Delete an IP access control list group (IP ACL group) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-groups/{id} [delete]
+// @Security Bearer
+func DeleteIpACLGroup(c echo.Context) error {
+
+	id := c.Param("id")
+	if id == "" {
+		errMsg := errors.New("empty IF of IP access control list group (ACL group)").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	err := nhnutil.DeleteIpACLGroup(nhnutil.KR1, id)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to delete IP access control list group (ACL group)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.BasicResponse{
+		Result: "successfully deleted IP access control list group (ACL group)",
+		Error:  nil,
+	})
+}
+
 type GetIpACLTargetsResponse struct {
 	nhnutil.IPACLTargets
 }
@@ -606,7 +645,7 @@ func CreateIpACLTarget(c echo.Context) error {
 
 // DeleteIpACLTarget godoc
 // @Summary Delete an IP access control list target (IP ACL target)
-// @Description Delete an access control list target (IP ACL target) on NHN Cloud.
+// @Description Delete an IP access control list target (IP ACL target) on NHN Cloud.
 // @Tags [NHN Cloud] Load Balancer
 // @Accept  json
 // @Produce  json

@@ -25,6 +25,7 @@ func RegisterNHNRoutes(g *echo.Group) {
 	// IP access control list group
 	g.GET("/lbs/ipacl-groups", controller.GetIpACLGroups)
 	g.POST("/lbs/ipacl-groups", controller.CreateIpACLGroup)
+	g.DELETE("/lbs/ipacl-groups/:id", controller.DeleteIpACLGroup)
 
 	// IP access control list target
 	g.GET("/lbs/ipacl-targets", controller.GetIpACLTargets)

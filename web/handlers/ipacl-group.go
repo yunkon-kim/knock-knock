@@ -78,6 +78,58 @@ func CreateIpACLGroup(c echo.Context) error {
 	return c.JSON(http.StatusOK, createdGroup)
 }
 
+func DeleteIpACLGroup(c echo.Context) error {
+	id := c.Param("ipacl-group-id")
+	if id == "" {
+		errMsg := errors.New("empty IP ACL group ID").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	name, err := getUsernameFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	client := resty.New()
+	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-groups/" + id
+
+	// Create IP access control list group (IP ACL group)
+	resp, err := client.R().
+		SetAuthToken(token).
+		Delete(apiURL)
+
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	if err := nhnutil.CheckResponse(resp); err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(resp.StatusCode(), err)
+	}
+
+	slack.PostMessage(fmt.Sprintf("The IP ACL group (id: `%s`) is successfully deleted by %s.", id, name))
+
+	res := model.BasicResponse{
+		Result: "successfully deleted IP ACL group",
+		Error:  nil,
+	}
+
+	return c.JSON(http.StatusOK, res)
+
+}
+
 func GetIpACLTarget(c echo.Context) error {
 
 	id := c.Param("ipacl-group-id")
@@ -252,7 +304,7 @@ func DeleteIpACLTarget(c echo.Context) error {
 		return c.JSON(resp.StatusCode(), err)
 	}
 
-	slack.PostMessage(fmt.Sprintf("The rule (id: `%s`) is successfully deleted by %s.", id, name))
+	slack.PostMessage(fmt.Sprintf("The IP ACL target (id: `%s`) is successfully deleted by %s.", id, name))
 
 	res := model.BasicResponse{
 		Result: "successfully deleted IP ACL target",

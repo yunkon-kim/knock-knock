@@ -639,6 +639,37 @@ func CreateIpACLGroup(region Region, group IPACLGroup) (string, error) {
 	return resp.String(), nil
 }
 
+// Delete IP access control list group (IP ACL group)
+func DeleteIpACLGroup(region Region, groupId string) error {
+
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL
+	urlIpACLGroup := fmt.Sprintf("%s/v2.0/lbaas/ipacl-groups/%s", apiEndpoint, groupId)
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		Delete(urlIpACLGroup)
+
+	if err != nil {
+		return err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully created IP access control list group (IP ACL group)")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return nil
+}
+
 // Get IP access control list targets (IP ACL targets)
 func GetIpACLTargets(region Region) (string, error) {
 	client := resty.New()
@@ -739,5 +770,4 @@ func DeleteIpACLTarget(region Region, targetId string) error {
 	log.Trace().Msgf("Response Body: %s", resp.String())
 
 	return nil
-
 }

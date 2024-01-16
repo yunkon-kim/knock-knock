@@ -29,6 +29,7 @@ func SecurityGroup(g *echo.Group) {
 func IpACLGroup(g *echo.Group) {
 	// IP access control list group
 	g.POST("/ipacl-groups", handlers.CreateIpACLGroup)
+	g.DELETE("/ipacl-groups/:ipacl-group-id", handlers.DeleteIpACLGroup)
 
 	// IP access control list target
 	g.GET("/ipacl-targets/:ipacl-group-id", handlers.GetIpACLTarget)
