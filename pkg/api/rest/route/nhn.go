@@ -21,6 +21,7 @@ func RegisterNHNRoutes(g *echo.Group) {
 
 	// load banalcers
 	g.GET("/lbs", controller.GetLoadBalancers)
+	g.PUT("/lbs/:id/bind_ipacl_groups", controller.BindIpACLGroupToLoadBalancer)
 
 	// IP access control list group
 	g.GET("/lbs/ipacl-groups", controller.GetIpACLGroups)

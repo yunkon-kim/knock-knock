@@ -381,6 +381,72 @@ func GetLoadBalancers(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
+type BindIpACLGroupToLoadBalancerRequest struct {
+	nhnutil.IPACLGroupsBinding
+}
+
+// BindIpACLGroupToLoadBalancer godoc
+// @Summary Bind an IP access control list group (IP ACL group) to a load balancer
+// @Description Bind an IP access control list group (IP ACL group) to a load balancer on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Param  id  path  string  true  "Load Balancer ID"
+// @Param  body  body  string  true  "IP access control list group ID"
+// @Success 200 {object} []nhnutil.BoundPair "Successfully binded"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/{id}/bind_ipacl_groups [put]
+// @Security Bearer
+func BindIpACLGroupToLoadBalancer(c echo.Context) error {
+
+	id := c.Param("id")
+	if id == "" {
+		errMsg := errors.New("empty ID of load balancer").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	// Get path params, query params and/or the request body
+	req := new(nhnutil.IPACLGroupsBinding)
+	if err := c.Bind(req); err != nil {
+		log.Error().Err(err).Msg("")
+		errMsg := err.Error()
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	pairList, err := nhnutil.BindIpACLGroupToLoadBalancer(nhnutil.KR1, id, *req)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to bind an IP ACL groups to a load balancer")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new([]nhnutil.BoundPair)
+
+	err = json.Unmarshal([]byte(pairList), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal a list of the bound IP ACL groups to a load balancer")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal a list of the bound IP ACL groups to a load balancer",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
 // ////////////////////////////////////////////////////////////////////////////////
 type GetIpACLGroupsResponse struct {
 	nhnutil.IPACLGroups

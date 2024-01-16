@@ -231,9 +231,9 @@
                           <!-- Radio -->
                           <div class="ipacl-group-action-group" role="group" aria-label="Basic radio toggle button group">
                             <input type="radio" class="btn-check" name="btnradio" id="btnradio1" checked autocomplete="off" />
-                            <label class="btn btn-outline-primary" for="btnradio1">ALLOW</label>
+                            <label class="btn btn-outline-secondary" for="btnradio1">ALLOW</label>
                             <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
-                            <label class="btn btn-outline-primary" for="btnradio2">DENY</label>
+                            <label class="btn btn-outline-secondary" for="btnradio2">DENY</label>
                           </div>
                         </div>
                       </div>
@@ -285,7 +285,6 @@
                         <th>Name</th>
                         <th>ID</th>
                         <th>Action</th>
-                        <th>IPACL Target Count</th>
                         <th>LoadBalancers</th>
                         <th>Description</th>
                         <th>Actions</th>
@@ -297,7 +296,6 @@
                         <td><strong>{{.Name}}</strong></td>
                         <td id="ipacl-group-id-{{.Id}}" class="ipacl-group-id" data-id="{{.Id}}">{{.Id}}</td>
                         <td>{{.Action}}</td>
-                        <td>{{.IpaclTargetCount}}</td>
                         <td>
                           {{range .LoadBalancers}}
                           <div>
@@ -466,10 +464,6 @@
           console.log(data);
           ipaclGroup = data.ipacl_group;
           
-          if (ipaclGroup.target_count == undefined) {
-            ipaclGroup.target_count = 0;
-          }
-
           if (ipaclGroup.description == undefined) {
             ipaclGroup.description = "";
           }
@@ -509,7 +503,6 @@
           <td><strong>${group.name}</strong></td>
           <td id="ipacl-group-id-${group.id}" class="ipacl-group-id" data-id="${group.id}">${group.id}</td>
           <td>${group.action}</td>
-          <td>${group.target_count}</td>
           <td>`;
             if (group.loadbalancers !== undefined) {
               group.loadbalancers.forEach((loadBalancer) => {

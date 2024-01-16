@@ -214,160 +214,47 @@
                         <td><strong>{{.Name}}</strong></td>
                         <td>{{.Id}}</td>
                         <td>{{if .Description}}{{.Description}}{{else}}-{{end}}</td>
-                        <td id="lbs-container-{{.Id}}">
+                        <td id="ipacl-groups-container-{{.Id}}">
                           <!-- Loop through the security group rules -->
                           {{range .IpaclGroups}}
+                          {{if eq .Checked "checked"}}
                           <div id="ipacl-group-element-{{.IpaclGroupId}}" class="d-flex justify-content-between align-items-center">
-                            <div>
-                              {{.IpaclGroupId}}
-                            </div>
-                            <div class="ipacl-group-actions-">
-                              <!-- Button trigger for detaching ipacl-group -->
-                              <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#ipacl-group-{{.IpaclGroupId}}" data-id="{{.IpaclGroupId}}">Detach</button>
-
-                              <!-- Modal -->
-                              <div class="modal fade" id="ipacl-group-{{.IpaclGroupId}}" tabindex="-1" aria-hidden="true" data-id="{{.IpaclGroupId}}">
-                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title">Modal title</h5>
-                                      <button
-                                        type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                      ></button>
-                                    </div>
-                                    <div class="modal-body">
-                                      <div class="row">
-                                        <div class="col mb-3">
-                                          <div class="alert alert-danger">
-                                            WARNING: Are you sure you want to detach this rule?
-                                          </div>
-                                          <label for="confirmText" class="form-label">To confirm detachment, type <i>detach</i> in the field:</label>
-                                          <input
-                                            type="text"
-                                            id="confirmText"
-                                            class="form-control"
-                                            placeholder="detach"
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                        Cancel
-                                      </button>
-                                      <button type="button" class="btn btn-danger detach-ipacl-group-btn">Delete</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            {{.IpaclGroupId}}
                           </div>
                           {{end}}
+                          {{end}}
                         </td>
-
                         <td>
-
                           <!-- Button trigger modal for adding a rule to the group -->
-                          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#lb-{{.Id}}" data-id="{{.Id}}">Attach Rule</button>
+                          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-ipacl-groups-update-{{.Id}}" data-id="{{.Id}}">Update groups</button>
 
                           <!-- Modal -->
-                          <div class="modal fade" id="lb-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
+                          <div class="modal fade" id="modal-ipacl-groups-update-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                               <div class="modal-content">
 
                                 <div class="modal-header">
-                                  <h5 class="modal-title">Fill in this form to attach IP ACL group</h5>
-                                  <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                  ></button>
+                                  <h5 class="modal-title">Update IP ACL groups </h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <!-- 
+
                                 <div class="modal-body">
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="direction" class="form-label">Direction</label>
-                                      <input
-                                        type="text"
-                                        id="direction-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="ingress or egrass"
-                                      />
+                                  <div class="col-md">
+                                    <small class="text-light fw-semibold">Checkboxes</small>
+                                    {{range .IpaclGroups}}
+                                    <div class="form-check mt-3">
+                                      <input class="form-check-input" type="checkbox" value="" {{.Checked}} data-id="{{.IpaclGroupId}}"/>
+                                      <label class="form-check-label" for="defaultCheck1">{{.IpaclGroupId}} {{if .Description}}({{.Description}}){{end}}</label>
                                     </div>
-                                  </div>
-
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="protocol" class="form-label">Protocol</label>
-                                      <input
-                                        type="text"
-                                        id="protocol-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="tcp, udp, icmp, and etc."
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="portRangeMin" class="form-label">Port range min</label>
-                                      <input
-                                        type="text"
-                                        id="port-range-min-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="80, 1, and etc."
-                                      />
-                                    </div>
-                                  </div>
-
-                                  
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="portRangeMax" class="form-label">Port range max</label>
-                                      <input
-                                        type="text"
-                                        id="port-range-max-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="80, 65535, and etc."
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="ethertype" class="form-label">Ethertype</label>
-                                      <input
-                                        type="text"
-                                        id="ethertype-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="IPv4 or IPv6"
-                                      />
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="row">
-                                    <div class="col mb-3">
-                                      <label for="remoteIpPrefix" class="form-label">Remote IP prefix</label>
-                                      <input
-                                        type="text"
-                                        id="remote-ip-prefix-{{.Id}}"
-                                        class="form-control"
-                                        placeholder="0.0.0.0/0, 123.123.123.123/32, and etc."
-                                      />
-                                    </div>
-                                  </div>
-                                  -->
+                                    {{end}}
+                                  </div>                                  
                                 </div>
+
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                     Cancel
                                   </button>
-                                  <button type="button" class="btn btn-primary attach-ipacl-group-btn">Attach</button>
+                                  <button type="button" class="btn btn-primary update-ipacl-groups-btn">Update</button>
                                 </div>
                               </div>
                             </div>
@@ -445,175 +332,86 @@
         return ""; // if username is not in the cookie
       }
 
-      // Handling the 'Attach' button click
-      function handleAttachButtonClick() {
-        // const groupId = this.closest('.modal').getAttribute('data-id');
-        // const direction = document.getElementById('direction-' + groupId).value;
-        // const protocol = document.getElementById('protocol-' + groupId).value;
-        // const portRangeMin = document.getElementById('port-range-min-' + groupId).value;
-        // const portRangeMax = document.getElementById('port-range-max-' + groupId).value;
-        // const ethertype = document.getElementById('ethertype-' + groupId).value;
-        // const remoteIpPrefix = document.getElementById('remote-ip-prefix-' + groupId).value;
-// 
-        // console.log("groupId: " + groupId);
-        // console.log("name: " + name);
-// 
-        // // AJAX request to server for creating a rule
-        // const data = {
-        //   "security_group_rule": {
-        //     "description": "set by " + name,
-        //     "direction": direction,
-        //     "ethertype": ethertype,
-        //     "id": "",
-        //     "port_range_max": parseInt(portRangeMin),
-        //     "port_range_min": parseInt(portRangeMax),
-        //     "protocol": protocol,
-        //     "remote_group_id": "",
-        //     "remote_ip_prefix": remoteIpPrefix,
-        //     "security_group_id": groupId,
-        //     "tenant_id": ""
-        //   }
-        // };
-// 
-        // fetch('/kk/svc/rule', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        //   .then(response => {
-        //     console.log(response);
-        //     if (!response.ok) {
-        //       throw new Error('Network response was not ok: ' + response.statusText);
-        //     }
-        //     return response.json();
-        //   })
-        //   .then(data => {
-        //     console.log('data:');
-        //     console.log(data);
-        //     sgRule = data.security_group_rule;
-// 
-        //     // Constructing a new HTML element for the created rule
-        //     const newRuleHtml = `<div id="ipacl-group-element-${sgRule.id}" class="d-flex justify-content-between align-items-center">
-        //     <div>
-        //       ${sgRule.direction}/
-        //       ${sgRule.protocol}/
-        //       ${sgRule.port_range_min} - ${sgRule.port_range_max}/
-        //       ${sgRule.ethertype}/
-        //       ${sgRule.remote_ip_prefix}/
-        //       ${sgRule.description}
-        //     </div>
-        //     <div class="ipacl-group-actions-">
-        //       <!-- Button trigger for deleting a rule -->
-        //       <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rule-${sgRule.id}" data-id="${sgRule.id}">Delete Rule</button>
-// 
-        //       <!-- Modal -->
-        //       <div class="modal fade" id="rule-${sgRule.id}" tabindex="-1" aria-hidden="true" data-id="${sgRule.id}">
-        //         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        //           <div class="modal-content">
-        //             <div class="modal-header">
-        //               <h5 class="modal-title">Modal title</h5>
-        //               <button
-        //                 type="button"
-        //                 class="btn-close"
-        //                 data-bs-dismiss="modal"
-        //                 aria-label="Close"
-        //               ></button>
-        //             </div>
-        //             <div class="modal-body">
-        //               <div class="row">
-        //                 <div class="col mb-3">
-        //                   <div class="alert alert-danger">
-        //                     WARNING: Are you sure you want to delete this rule? This action cannot be undone.
-        //                   </div>
-        //                   <label for="confirmText" class="form-label">To confirm deletion, type <i>delete</i> in the field:</label>
-        //                   <input
-        //                     type="text"
-        //                     id="confirmText"
-        //                     class="form-control"
-        //                     placeholder="delete"
-        //                   />
-        //                 </div>
-        //               </div>
-        //             </div>
-        //             <div class="modal-footer">
-        //               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-        //                 Cancel
-        //               </button>
-        //               <button type="button" class="btn btn-danger delete-rule-btn">Delete</button>
-        //             </div>
-        //           </div>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   </div>`;
-        //     // Appending the new rule to the rules container
-        //     document.getElementById('lbs-container-' + groupId).innerHTML += newRuleHtml;
-// 
-        //     // Bind the 'delete' click event to the new button
-        //     const newButton = document.querySelector('#rule-' + sgRule.id + ' .delete-rule-btn');
-        //     newButton.addEventListener('click', handleDeleteButtonClick);
-// 
-        //     // Close the modal using Bootstrap's JavaScript method
-        //     var createRuleModalElement = document.getElementById('sg-' + groupId);
-        //     var createRuleModal = bootstrap.Modal.getInstance(createRuleModalElement);
-        //     createRuleModal.hide();
-// 
-        //     // Reset the form          
-        //     document.getElementById('direction-' + groupId).value = '';
-        //     document.getElementById('protocol-' + groupId).value = '';
-        //     document.getElementById('port-range-min-' + groupId).value = '';
-        //     document.getElementById('port-range-max-' + groupId).value = '';
-        //     document.getElementById('ethertype-' + groupId).value = '';
-        //     document.getElementById('remote-ip-prefix-' + groupId).value = '';
-// 
-        //   })
-        //   .catch((error) => {
-        //     console.error('Error:', error);
-        //     // Handle error response
-        //   });
+      // Handling the 'Update' button click
+      function handleUpdateButtonClick() {
+        
+        var updateModelElement = this.closest('.modal');
+        const lbId = updateModelElement.getAttribute('data-id');
+        
+        // Assuming your checkboxes have a class 'ipacl-group-checkbox'
+        const checkboxes = this.closest('.modal-content').querySelectorAll('.form-check-input');
+    
+        let checkedGroupIDs = [];
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+              id = checkbox.getAttribute('data-id');
+              console.log("id: " + id);
+              checkedGroupIDs.push({
+                "ipacl_group_id": id
+              }); // Collecting the IDs of checked items
+            }
+        });
 
-      }
+        console.log("lbId: " + lbId);
+        console.log("checkedGroupIDs: ");
+        console.log(checkedGroupIDs);
 
-      // Handling the 'Detach' Button Click
-      function handleDetachButtonClick() {
-        // const ruleId = this.closest('.modal').getAttribute('data-id');
-        // const confirmText = this.closest('.modal').querySelector('#confirmText').value;
-// 
-        // console.log("ruleId: " + ruleId);
-// 
-        // if (confirmText.toLowerCase() === 'delete') {
-        //   // AJAX request to server for deleting a rule
-        //   fetch('/kk/svc/rule/' + ruleId, {
-        //     method: 'DELETE'
-        //   })
-        //     .then(response => { // Processing the response
-        //       console.log(response);
-        //       if (!response.ok) {
-        //         throw new Error('Network response was not ok: ' + response.statusText);
-        //       }
-        //       return response.json();
-        //     })
-        //     .then(data => { // Handling success
-        //       console.log('data:');
-        //       console.log(data);
-// 
-        //       // Close the modal using Bootstrap's JavaScript method
-        //       var deleteRuleModalElement = document.getElementById('rule-' + ruleId);
-        //       var deleteRuleModal = bootstrap.Modal.getInstance(deleteRuleModalElement);
-        //       deleteRuleModal.hide();
-// 
-        //       // Handle success response
-        //       document.getElementById('ipacl-group-element-' + ruleId).remove();
-        //     })
-        //     .catch((error) => { // Error handling
-        //       console.error('Error:', error);
-        //       // Handle error response
-        //     });
-        // } else {
-        //   alert('Confirmation text does not match. Please type "delete" to confirm.');
-        // }
+        if (checkedGroupIDs.length == 0) {
+          alert("please select at least one IP ACL group");
+          return;
+        }
+
+        if (lbId == "") {
+          alert("cannot find load balancer ID");
+          return;
+        }
+
+        // AJAX request to server for creating a rule
+        const req = {
+          "ipacl_groups_binding": checkedGroupIDs
+        };
+
+        console.log("req: ");
+        console.log(req);
+
+        fetch('/kk/svc/lb/'+lbId+'/bind_ipacl_groups', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(req),
+        })
+        .then(response => {
+          console.log(response);
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('data:');
+          console.log(data);
+
+          newHtml = ``;
+          data.forEach(function(item, index, array) {
+            newHtml += `
+            <div id="ipacl-group-element-${item.ipacl_group_id}" class="d-flex justify-content-between align-items-center">
+              ${item.ipacl_group_id}
+            </div>
+            `;
+          });
+
+          document.getElementById('ipacl-groups-container-' + lbId).innerHTML = newHtml;
+
+          // Close the modal using Bootstrap's JavaScript method          
+          var updateModel= bootstrap.Modal.getInstance(updateModelElement);
+          updateModel.hide();
+
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle error response
+        });
       }
 
     </script>
@@ -627,16 +425,10 @@
         document.getElementById("username").innerHTML = name;
         document.getElementById("role").innerHTML = role;
 
-        // Bind the 'attach' button click event
-        document.querySelectorAll('.attach-ipacl-group-btn').forEach(button => {
-          button.addEventListener('click', handleAttachButtonClick);
+        // Bind click event to 'update' button of IP ACL groups
+        document.querySelectorAll('.update-ipacl-groups-btn').forEach(button => {
+          button.addEventListener('click', handleUpdateButtonClick);
         });
-
-        // Bind the 'detach' button click event
-        document.querySelectorAll('.detach-ipacl-group-btn').forEach(button => {
-          button.addEventListener('click', handleDetachButtonClick);
-        });
-
       };
     </script>
 

@@ -106,6 +106,7 @@ func RunFrontendServer(port string) {
 
 	svc := g.Group("/svc")
 	routes.SecurityGroup(svc)
+	routes.LoadBalancer(svc)
 	routes.IpACLGroup(svc)
 
 	//

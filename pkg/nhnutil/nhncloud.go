@@ -498,6 +498,16 @@ type Listener struct {
 	Id string `json:"id"`
 }
 
+// Models for Binding LoadBalancer and IP ACL groups
+type IPACLGroupsBinding struct {
+	IpaclGroupsBinding []IPACLGroupId `json:"ipacl_groups_binding"`
+}
+
+type BoundPair struct {
+	LoadBalancerId string `json:"loadbalancer_id"`
+	IpaclGroupId   string `json:"ipacl_group_id"`
+}
+
 // Models for IP ACL groups
 type IPACLGroups struct {
 	IpaclGroups []IPACLGroupDetails `json:"ipacl_groups"`
@@ -563,6 +573,45 @@ func GetLoadBalancers(region Region) (string, error) {
 
 	// Print result
 	log.Info().Msg("Successfully got security group")
+	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
+	log.Trace().Msgf("Response Body: %s", resp.String())
+
+	return resp.String(), nil
+}
+
+// Bind IP access control list group (IP ACL group) to load balancer
+func BindIpACLGroupToLoadBalancer(region Region, lbId string, bindings IPACLGroupsBinding) (string, error) {
+	client := resty.New()
+
+	// Set API endpoint
+	apiEndpoint := fmt.Sprintf(apiEndpointInfrastructureDocstring, region, Network)
+	// Set API URL for security groups
+	urlBinding := fmt.Sprintf("%s/v2.0/lbaas/loadbalancers/%s/bind_ipacl_groups", apiEndpoint, lbId)
+
+	// Set request body
+	reqJsonBytes, err := json.Marshal(bindings)
+	log.Debug().Msgf("Request Body: %s", reqJsonBytes)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to marshal JSON")
+		return "", err
+	}
+
+	// Set Resty
+	resp, err := client.R().
+		SetHeader("X-Auth-Token", tokenId).
+		SetHeader("Content-Type", "application/json").
+		SetBody(reqJsonBytes).
+		Put(urlBinding)
+
+	if err != nil {
+		return "", err
+	}
+	if err := CheckResponse(resp); err != nil {
+		return "", err
+	}
+
+	// Print result
+	log.Info().Msg("Successfully bound IP ACL groups to load balancer")
 	log.Debug().Msgf("Response Status Code: %d", resp.StatusCode())
 	log.Trace().Msgf("Response Body: %s", resp.String())
 

@@ -14,6 +14,79 @@ import (
 	"github.com/yunkon-kim/knock-knock/pkg/nhnutil"
 )
 
+func BindIpACLGroupToLoadBalancer(c echo.Context) error {
+	id := c.Param("lb-id")
+	if id == "" {
+		errMsg := errors.New("empty loadbalancer ID").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	// Path param, query param or reuqeust body
+	ipaclGroupsBinding := new(nhnutil.IPACLGroupsBinding)
+	if err := c.Bind(ipaclGroupsBinding); err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	log.Debug().Msgf("ipaclGroupsBinding: %v", ipaclGroupsBinding)
+
+	token, err := getTokenFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	name, err := getUsernameFromSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	client := resty.New()
+	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/" + id + "/bind_ipacl_groups"
+
+	// Get IP access control list targets (IP ACL targets)
+
+	resp, err := client.R().
+		SetHeader("Accept", "application/json").
+		SetAuthToken(token).
+		SetBody(ipaclGroupsBinding).
+		Put(apiURL)
+
+	if err != nil {
+		log.Error().Err(err).Msg("failed to bind IP ACL Groups to the load balancer")
+		return c.JSON(resp.StatusCode(), err)
+	}
+
+	if resp.IsError() {
+		log.Error().Err(err).Msgf("API request failed with status code %d", resp.StatusCode())
+		return c.JSON(resp.StatusCode(), err)
+	}
+
+	// Unmarshal response body
+	pairList := new([]nhnutil.BoundPair)
+	err = json.Unmarshal(resp.Body(), pairList)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to unmarshal the bound IP ACL Groups to the load balancer")
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	prettyJSON, err := json.MarshalIndent(pairList, "", "   ")
+	if err != nil {
+		log.Error().Err(err).Msgf("")
+	}
+
+	log.Trace().Msgf("pairList: %+v", string(prettyJSON))
+
+	slack.PostMessage(
+		"IP ACL groups are bound by " + name + " as follows.\n\n```" + string(prettyJSON) + "```")
+
+	return c.JSON(http.StatusOK, pairList)
+}
+
 func CreateIpACLGroup(c echo.Context) error {
 
 	// Path param, query param or reuqeust body
@@ -127,7 +200,6 @@ func DeleteIpACLGroup(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, res)
-
 }
 
 func GetIpACLTarget(c echo.Context) error {

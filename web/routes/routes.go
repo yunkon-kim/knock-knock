@@ -26,6 +26,10 @@ func SecurityGroup(g *echo.Group) {
 	g.DELETE("/rule/:id", handlers.DeleteRule)
 }
 
+func LoadBalancer(g *echo.Group) {
+	g.PUT("/lb/:lb-id/bind_ipacl_groups", handlers.BindIpACLGroupToLoadBalancer)
+}
+
 func IpACLGroup(g *echo.Group) {
 	// IP access control list group
 	g.POST("/ipacl-groups", handlers.CreateIpACLGroup)
