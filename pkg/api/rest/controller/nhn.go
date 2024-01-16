@@ -277,6 +277,477 @@ func DeleteSecurityGroupRule(c echo.Context) error {
 	})
 }
 
+type GetNetworkACLsResponse struct {
+	nhnutil.NetworkACLs
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// GetNetworkACLs godoc
+// @Summary Get a list of network ACLs
+// @Description Get a list of network ACLs on NHN Cloud.
+// @Tags [NHN Cloud] Network ACL
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetNetworkACLsResponse "A list of network ACLs returned from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/acls [get]
+// @Security Bearer
+func GetNetworkACLs(c echo.Context) error {
+
+	acls, err := nhnutil.GetNetworkACLs(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get network ACLs")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get network ACLs",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no network ACLs",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.NetworkACLs)
+
+	err = json.Unmarshal([]byte(acls), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal network ACLs")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal network ACLs",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+type GetLoadBalancersResponse struct {
+	nhnutil.LoadBalancers
+}
+
+// GetLoadBalancers godoc
+// @Summary Get a list of load balancers
+// @Description Get a list of load balancers on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetLoadBalancersResponse "A list of load balancers returned from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs [get]
+// @Security Bearer
+func GetLoadBalancers(c echo.Context) error {
+
+	lbs, err := nhnutil.GetLoadBalancers(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get load balancers")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get load balancers",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no load balancers",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.LoadBalancers)
+
+	err = json.Unmarshal([]byte(lbs), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal load balancers")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal load balancers",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+type BindIpACLGroupToLoadBalancerRequest struct {
+	nhnutil.IPACLGroupsBinding
+}
+
+// BindIpACLGroupToLoadBalancer godoc
+// @Summary Bind an IP access control list group (IP ACL group) to a load balancer
+// @Description Bind an IP access control list group (IP ACL group) to a load balancer on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Param  id  path  string  true  "Load Balancer ID"
+// @Param  body  body  string  true  "IP access control list group ID"
+// @Success 200 {object} []nhnutil.BoundPair "Successfully binded"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/{id}/bind_ipacl_groups [put]
+// @Security Bearer
+func BindIpACLGroupToLoadBalancer(c echo.Context) error {
+
+	id := c.Param("id")
+	if id == "" {
+		errMsg := errors.New("empty ID of load balancer").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	// Get path params, query params and/or the request body
+	req := new(nhnutil.IPACLGroupsBinding)
+	if err := c.Bind(req); err != nil {
+		log.Error().Err(err).Msg("")
+		errMsg := err.Error()
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	pairList, err := nhnutil.BindIpACLGroupToLoadBalancer(nhnutil.KR1, id, *req)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to bind an IP ACL groups to a load balancer")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new([]nhnutil.BoundPair)
+
+	err = json.Unmarshal([]byte(pairList), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal a list of the bound IP ACL groups to a load balancer")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal a list of the bound IP ACL groups to a load balancer",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+// ////////////////////////////////////////////////////////////////////////////////
+type GetIpACLGroupsResponse struct {
+	nhnutil.IPACLGroups
+}
+
+// GetIpACLGroups godoc
+// @Summary Get IP access control list groups (IP ACL groups)
+// @Description Get access control list groups (IP ACL groups) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetIpACLGroupsResponse "Access control list groups (IP ACL groups) from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-groups [get]
+// @Security Bearer
+func GetIpACLGroups(c echo.Context) error {
+
+	ipacls, err := nhnutil.GetIpACLGroups(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get IP access control list groups (IP ACL groups)")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get IP access control list groups (IP ACL groups)",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no IP access control list groups (IP ACL groups)",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.IPACLGroups)
+
+	err = json.Unmarshal([]byte(ipacls), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal IP access control groups (IP ACL groups)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal IP access control groups (IP ACL groups)",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+type CreateIpACLGroupRequest struct {
+	nhnutil.IPACLGroup
+}
+
+type CreateIpACLGroupResponse struct {
+	nhnutil.IPACLGroup
+}
+
+// CreateIpACLGroup godoc
+// @Summary Create an IP access control list group (IP ACL group)
+// @Description Create an access control list group (IP ACL group) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} CreateIpACLGroupResponse "An access control list group (IP ACL group) from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-groups [post]
+// @Security Bearer
+func CreateIpACLGroup(c echo.Context) error {
+
+	// Get path params, query params and/or the request body
+	req := new(nhnutil.IPACLGroup)
+	if err := c.Bind(req); err != nil {
+		log.Error().Err(err).Msg("")
+		errMsg := err.Error()
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	ipaclGroup, err := nhnutil.CreateIpACLGroup(nhnutil.KR1, *req)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to create an IP access control list group (IP ACL group)")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to create an IP access control list group (IP ACL group)",
+				Error:  &errMsg,
+			})
+		}
+	}
+
+	res := new(nhnutil.IPACLGroup)
+
+	err = json.Unmarshal([]byte(ipaclGroup), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal an IP access control list group (IP ACL group)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal an IP access control list group (IP ACL group)",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+// DeleteIpACLGroup godoc
+// @Summary Delete an IP access control list group (IP ACL group)
+// @Description Delete an IP access control list group (IP ACL group) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-groups/{id} [delete]
+// @Security Bearer
+func DeleteIpACLGroup(c echo.Context) error {
+
+	id := c.Param("id")
+	if id == "" {
+		errMsg := errors.New("empty IF of IP access control list group (ACL group)").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	err := nhnutil.DeleteIpACLGroup(nhnutil.KR1, id)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to delete IP access control list group (ACL group)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.BasicResponse{
+		Result: "successfully deleted IP access control list group (ACL group)",
+		Error:  nil,
+	})
+}
+
+type GetIpACLTargetsResponse struct {
+	nhnutil.IPACLTargets
+}
+
+// GetIpACLTargets godoc
+// @Summary Get IP access control list targets (IP ACL targets)
+// @Description Get access control list targets (IP ACL targets) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} GetIpACLTargetsResponse "Access control list targets (IP ACL targets) from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-targets [get]
+// @Security Bearer
+func GetIpACLTargets(c echo.Context) error {
+
+	ipaclTargets, err := nhnutil.GetIpACLTargets(nhnutil.KR1)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get IP access control list targets (IP ACL targets)")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to get IP access control list targets (IP ACL targets)",
+				Error:  &errMsg,
+			})
+		}
+		return c.JSON(http.StatusNotFound, model.BasicResponse{
+			Result: "no IP access control list targets (IP ACL targets)",
+			Error:  &errMsg,
+		})
+	}
+
+	res := new(nhnutil.IPACLTargets)
+
+	err = json.Unmarshal([]byte(ipaclTargets), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal IP access control targets (IP ACL targets)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal IP access control targets (IP ACL targets)",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+type CreateIpACLTargetRequest struct {
+	nhnutil.IPACLTarget
+}
+
+type CreateIpACLTargetResponse struct {
+	nhnutil.IPACLTarget
+}
+
+// CreateIpACLTarget godoc
+// @Summary Create an IP access control list target (IP ACL target)
+// @Description Create an access control list target (IP ACL target) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} CreateIpACLTargetResponse "An access control list target (IP ACL target) from NHN Cloud"
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-targets [post]
+// @Security Bearer
+func CreateIpACLTarget(c echo.Context) error {
+
+	// Get path params, query params and/or the request body
+	req := new(nhnutil.IPACLTarget)
+	if err := c.Bind(req); err != nil {
+		log.Error().Err(err).Msg("")
+		errMsg := err.Error()
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	ipaclTarget, err := nhnutil.CreateIpACLTarget(nhnutil.KR1, *req)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to create an IP access control list target (IP ACL target)")
+		errMsg := err.Error()
+		if errMsg == "Authentication required" {
+			return c.JSON(http.StatusUnauthorized, model.BasicResponse{
+				Result: "Failed to create an IP access control list target (IP ACL target)",
+				Error:  &errMsg,
+			})
+		}
+	}
+
+	res := new(nhnutil.IPACLTarget)
+
+	err = json.Unmarshal([]byte(ipaclTarget), &res)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to unmarshal an IP access control list target (IP ACL target)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "Failed to unmarshal an IP access control list target (IP ACL target)",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+// DeleteIpACLTarget godoc
+// @Summary Delete an IP access control list target (IP ACL target)
+// @Description Delete an IP access control list target (IP ACL target) on NHN Cloud.
+// @Tags [NHN Cloud] Load Balancer
+// @Accept  json
+// @Produce  json
+// @Failure 400 {object} model.BasicResponse "Bad Request"
+// @Failure 401 {object} model.BasicResponse "Unauthorized"
+// @Failure 404 {object} model.BasicResponse "Not Found"
+// @Router /nhn/lbs/ipacl-targets/{id} [delete]
+// @Security Bearer
+func DeleteIpACLTarget(c echo.Context) error {
+
+	id := c.Param("id")
+	if id == "" {
+		errMsg := errors.New("empty IF of IP access control list target (ACL target)").Error()
+		log.Error().Msg(errMsg)
+		return c.JSON(http.StatusBadRequest, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	err := nhnutil.DeleteIpACLTarget(nhnutil.KR1, id)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to delete IP access control list target (ACL target)")
+		errMsg := err.Error()
+		return c.JSON(http.StatusInternalServerError, model.BasicResponse{
+			Result: "",
+			Error:  &errMsg,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.BasicResponse{
+		Result: "successfully deleted IP access control list target (ACL target)",
+		Error:  nil,
+	})
+}
+
 // // Struct Embedding is used to inherit the fields of security group
 // type UpdateSecurityGroupRequest struct {
 // 	SecurityGroupdId    string `json:"security_group_id"`

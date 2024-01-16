@@ -92,6 +92,11 @@ func RunFrontendServer(port string) {
 	}
 	e.Renderer = renderer
 
+	// Not found handler
+	e.RouteNotFound("/*", func(c echo.Context) error {
+		return c.File(projectRoot + "/web/templates/pages-misc-error.html")
+	})
+
 	// Routes
 	routes.Auth(e)
 
@@ -101,6 +106,8 @@ func RunFrontendServer(port string) {
 
 	svc := g.Group("/svc")
 	routes.SecurityGroup(svc)
+	routes.LoadBalancer(svc)
+	routes.IpACLGroup(svc)
 
 	//
 	frontendUrl := " http://localhost:8888/"
