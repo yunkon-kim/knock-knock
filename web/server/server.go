@@ -56,6 +56,22 @@ func RunFrontendServer(port string) {
 	projectRoot := viper.GetString("knockknock.root")
 
 	e := echo.New()
+
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		// Handle not found error
+		if he, ok := err.(*echo.HTTPError); ok && he.Code == http.StatusNotFound {
+			// Serve your custom error page
+			err = c.File(projectRoot + "/web/templates/pages-misc-error.html")
+			if err != nil {
+				c.Logger().Error(err)
+			}
+			return
+		}
+
+		// Default error handling
+		e.DefaultHTTPErrorHandler(err, c)
+	}
+
 	// Middleware for session management
 	// Options stores configuration for a session or session store.
 	// Fields are a subset of http.Cookie fields.
@@ -85,17 +101,13 @@ func RunFrontendServer(port string) {
 	// e.Static("/html", "../../web/templates")
 	e.Static("/assets", projectRoot+"/web/assets")
 	e.Static("/fonts", projectRoot+"/web/fonts")
+	e.Static("/img", projectRoot+"/web/assets/img")
 
 	// Templates
 	renderer := &TemplateRenderer{
 		templates: template.Must(template.ParseGlob(projectRoot + "/web/templates/*.html")),
 	}
 	e.Renderer = renderer
-
-	// Not found handler
-	e.RouteNotFound("/*", func(c echo.Context) error {
-		return c.File(projectRoot + "/web/templates/pages-misc-error.html")
-	})
 
 	// Routes
 	routes.Auth(e)

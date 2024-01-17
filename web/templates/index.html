@@ -2,10 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Knock-knock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('/img/wallpapers/wallpaper.jpg') no-repeat center center; 
+            background-size: cover;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+            padding-top: 2.5rem;
+            padding-bottom: 3.5rem;
+            padding-left: 3.5rem;
+            padding-right: 3.5rem;
+            border-radius: 35%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        button {
+            padding: 15px 25px;
+            background-color: #4e5ae8; /* Adjusted button color */
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3b44c1; /* Darker shade when hovered */
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Application</h1>
-    <button onclick="location.href='/login'">Login</button>
+    <div class="container">
+        <h1>Knock-knock</h1>
+        <button onclick="location.href='/login'">Login</button>
+    </div>
 </body>
 </html>
