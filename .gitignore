@@ -41,9 +41,9 @@ pkg/testclient/scripts/sequentialFullTest/ansibleAutoConf/*
 pkg/testclient/scripts/credentials*
 
 # Swagger docs for REST APIs
-pkg/api/rest/docs/docs.go
-pkg/api/rest/docs/swagger.json
-pkg/api/rest/docs/swagger.yaml
+# pkg/api/rest/docs/docs.go
+# pkg/api/rest/docs/swagger.json
+# pkg/api/rest/docs/swagger.yaml
 
 # Config file for knock-knock
 !conf/

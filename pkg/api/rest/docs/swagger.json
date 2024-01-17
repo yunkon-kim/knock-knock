@@ -1,0 +1,1639 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Knock-knock REST API",
+        "title": "Knock-knock REST API",
+        "contact": {
+            "name": "API Support",
+            "url": "http://AN_ORG.github.io",
+            "email": "AN_EMAIL"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "latest"
+    },
+    "basePath": "/knock-knock",
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "Check knock-knock is alive",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] System management"
+                ],
+                "summary": "Check knock-knock is alive",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/acls": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get a list of network ACLs on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Network ACL"
+                ],
+                "summary": "Get a list of network ACLs",
+                "responses": {
+                    "200": {
+                        "description": "A list of network ACLs returned from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetNetworkACLsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get a list of load balancers on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Get a list of load balancers",
+                "responses": {
+                    "200": {
+                        "description": "A list of load balancers returned from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetLoadBalancersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs/ipacl-groups": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get access control list groups (IP ACL groups) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Get IP access control list groups (IP ACL groups)",
+                "responses": {
+                    "200": {
+                        "description": "Access control list groups (IP ACL groups) from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetIpACLGroupsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create an access control list group (IP ACL group) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Create an IP access control list group (IP ACL group)",
+                "responses": {
+                    "200": {
+                        "description": "An access control list group (IP ACL group) from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateIpACLGroupResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs/ipacl-groups/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete an IP access control list group (IP ACL group) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Delete an IP access control list group (IP ACL group)",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs/ipacl-targets": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get access control list targets (IP ACL targets) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Get IP access control list targets (IP ACL targets)",
+                "responses": {
+                    "200": {
+                        "description": "Access control list targets (IP ACL targets) from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetIpACLTargetsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create an access control list target (IP ACL target) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Create an IP access control list target (IP ACL target)",
+                "responses": {
+                    "200": {
+                        "description": "An access control list target (IP ACL target) from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateIpACLTargetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs/ipacl-targets/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete an IP access control list target (IP ACL target) on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Delete an IP access control list target (IP ACL target)",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/lbs/{id}/bind_ipacl_groups": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Bind an IP access control list group (IP ACL group) to a load balancer on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Load Balancer"
+                ],
+                "summary": "Bind an IP access control list group (IP ACL group) to a load balancer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Load Balancer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "IP access control list group ID",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully binded",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/nhnutil.BoundPair"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/sg": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get a list of security groups on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Security Group"
+                ],
+                "summary": "Get a list of security groups",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "fields in security groups",
+                        "name": "fields",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of security groups returned from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetSecurityGroupsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/sg/{id}": {
+            "get": {
+                "description": "Get a security groups on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Security Group"
+                ],
+                "summary": "Get a security group",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Security Group ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A security groups returned from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetSecurityGroupResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/sgRule": {
+            "post": {
+                "description": "Create a rule to security group.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Security Group"
+                ],
+                "summary": "Create a rule to security group",
+                "parameters": [
+                    {
+                        "description": "Values to create a rule to security group",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.AddSecurityGroupRuleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Result of creating a rule to security group",
+                        "schema": {
+                            "$ref": "#/definitions/controller.AddSecurityGroupRuleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/sgRule/{id}": {
+            "delete": {
+                "description": "Delete a security group rule.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Security Group"
+                ],
+                "summary": "Delete a security group rule",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "a security group rule ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/token": {
+            "get": {
+                "description": "Get a token on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Token (for dev and test)"
+                ],
+                "summary": "Get a token",
+                "responses": {
+                    "200": {
+                        "description": "A token returned from NHN Cloud",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/nhn/tokenId": {
+            "post": {
+                "description": "Set a token ID on NHN Cloud.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[NHN Cloud] Token (for dev and test)"
+                ],
+                "summary": "Set a token ID",
+                "responses": {
+                    "200": {
+                        "description": "Result of setting token ID",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SetTokenIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/sample/users": {
+            "get": {
+                "description": "Get information of all users.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Get a list of users",
+                "responses": {
+                    "200": {
+                        "description": "(sample) This is a sample description for success response in Swagger UI",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetUsersResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user with the given information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User information",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "(Sample) This is a sample description for success response in Swagger UI",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/sample/users/{id}": {
+            "get": {
+                "description": "Get information of a user with a specific ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Get specific user information",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "(Sample) This is a sample description for success response in Swagger UI",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetUserResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user with the given information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Update a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User information to update",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "(Sample) This is a sample description for success response in Swagger UI",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a user with the given information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deletion successful",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a user with the given information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Sample] Users"
+                ],
+                "summary": "Patch a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User information to update",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.PatchUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "(Sample) This is a sample description for success response in Swagger UI",
+                        "schema": {
+                            "$ref": "#/definitions/controller.PatchUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.AddSecurityGroupRuleRequest": {
+            "type": "object",
+            "properties": {
+                "security_group_rule": {
+                    "$ref": "#/definitions/nhnutil.SecurityGroupRuleDetailsExt"
+                }
+            }
+        },
+        "controller.AddSecurityGroupRuleResponse": {
+            "type": "object",
+            "properties": {
+                "security_group_rule": {
+                    "$ref": "#/definitions/nhnutil.SecurityGroupRuleDetailsExt"
+                }
+            }
+        },
+        "controller.CreateIpACLGroupResponse": {
+            "type": "object",
+            "properties": {
+                "ipacl_group": {
+                    "$ref": "#/definitions/nhnutil.IPACLGroupDetails"
+                }
+            }
+        },
+        "controller.CreateIpACLTargetResponse": {
+            "type": "object",
+            "properties": {
+                "ipacl_target": {
+                    "$ref": "#/definitions/nhnutil.IPACLTargetDetails"
+                }
+            }
+        },
+        "controller.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.GetIpACLGroupsResponse": {
+            "type": "object",
+            "properties": {
+                "ipacl_groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.IPACLGroupDetails"
+                    }
+                }
+            }
+        },
+        "controller.GetIpACLTargetsResponse": {
+            "type": "object",
+            "properties": {
+                "ipacl_targets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.IPACLTargetDetails"
+                    }
+                }
+            }
+        },
+        "controller.GetLoadBalancersResponse": {
+            "type": "object",
+            "properties": {
+                "loadbalancers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.LoadBalancerDetails"
+                    }
+                }
+            }
+        },
+        "controller.GetNetworkACLsResponse": {
+            "type": "object",
+            "properties": {
+                "acls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.NetworkACLDetails"
+                    }
+                }
+            }
+        },
+        "controller.GetSecurityGroupResponse": {
+            "type": "object",
+            "properties": {
+                "security_group": {
+                    "$ref": "#/definitions/nhnutil.SecurityGroupDetails"
+                }
+            }
+        },
+        "controller.GetSecurityGroupsResponse": {
+            "type": "object",
+            "properties": {
+                "security_groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.SecurityGroupDetails"
+                    }
+                }
+            }
+        },
+        "controller.GetTokenResponse": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "$ref": "#/definitions/nhnutil.Access"
+                }
+            }
+        },
+        "controller.GetUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.GetUsersResponse": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MyUser"
+                    }
+                }
+            }
+        },
+        "controller.PatchUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.PatchUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.SetTokenIdResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.BasicResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MyUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Access": {
+            "type": "object",
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/nhnutil.Metadata"
+                },
+                "serviceCatalog": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.ServiceCatalog"
+                    }
+                },
+                "token": {
+                    "$ref": "#/definitions/nhnutil.Token"
+                },
+                "user": {
+                    "$ref": "#/definitions/nhnutil.User"
+                }
+            }
+        },
+        "nhnutil.BoundPair": {
+            "type": "object",
+            "properties": {
+                "ipacl_group_id": {
+                    "type": "string"
+                },
+                "loadbalancer_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Endpoint": {
+            "type": "object",
+            "properties": {
+                "publicURL": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.IPACLGroupDetails": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ipacl_target_count": {
+                    "type": "string"
+                },
+                "loadbalancers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.LoadBalancerId"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.IPACLGroupId": {
+            "type": "object",
+            "properties": {
+                "ipacl_group_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.IPACLTargetDetails": {
+            "type": "object",
+            "properties": {
+                "cidr_address": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ipacl_group_id": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Listener": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.LoadBalancerDetails": {
+            "type": "object",
+            "properties": {
+                "admin_state_up": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ipacl_group_action": {
+                    "type": "string"
+                },
+                "ipacl_groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.IPACLGroupId"
+                    }
+                },
+                "listeners": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.Listener"
+                    }
+                },
+                "loadbalancer_type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "operating_status": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "provisioning_status": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                },
+                "vip_address": {
+                    "type": "string"
+                },
+                "vip_port_id": {
+                    "type": "string"
+                },
+                "vip_subnet_id": {
+                    "type": "string"
+                },
+                "workflow_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.LoadBalancerId": {
+            "type": "object",
+            "properties": {
+                "loadbalancer_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Metadata": {
+            "type": "object",
+            "properties": {
+                "is_admin": {
+                    "type": "integer"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "nhnutil.NetworkACLDetails": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revision_number": {
+                    "type": "integer"
+                },
+                "tenant_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Role": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.RoleLink": {
+            "type": "object"
+        },
+        "nhnutil.SecurityGroupDetails": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "security_group_rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.SecurityGroupRuleDetails"
+                    }
+                },
+                "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.SecurityGroupRuleDetails": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "direction": {
+                    "type": "string",
+                    "default": "ingress"
+                },
+                "ethertype": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "port_range_max": {
+                    "type": "integer"
+                },
+                "port_range_min": {
+                    "type": "integer"
+                },
+                "protocol": {
+                    "type": "string",
+                    "default": "tcp"
+                },
+                "remote_group_id": {
+                    "type": "string"
+                },
+                "remote_ip_prefix": {
+                    "type": "string"
+                },
+                "security_group_id": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.SecurityGroupRuleDetailsExt": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "direction": {
+                    "type": "string",
+                    "default": "ingress"
+                },
+                "ethertype": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "port_range_max": {
+                    "type": "integer"
+                },
+                "port_range_min": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "protocol": {
+                    "type": "string",
+                    "default": "tcp"
+                },
+                "remote_group_id": {
+                    "type": "string"
+                },
+                "remote_ip_prefix": {
+                    "type": "string"
+                },
+                "revision_number": {
+                    "type": "integer"
+                },
+                "security_group_id": {
+                    "type": "string"
+                },
+                "tenant_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.ServiceCatalog": {
+            "type": "object",
+            "properties": {
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.Endpoint"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Tenant": {
+            "type": "object",
+            "properties": {
+                "RegionOne_sdn_preferred": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "project_domain": {
+                    "type": "string"
+                }
+            }
+        },
+        "nhnutil.Token": {
+            "type": "object",
+            "properties": {
+                "expires": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "issued_at": {
+                    "type": "string"
+                },
+                "tenant": {
+                    "$ref": "#/definitions/nhnutil.Tenant"
+                }
+            }
+        },
+        "nhnutil.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.Role"
+                    }
+                },
+                "roles_links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nhnutil.RoleLink"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token (get token in http://localhost:8056/auth)",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
