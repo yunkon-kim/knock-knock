@@ -1,0 +1,1069 @@
+basePath: /knock-knock
+definitions:
+  controller.AddSecurityGroupRuleRequest:
+    properties:
+      security_group_rule:
+        $ref: '#/definitions/nhnutil.SecurityGroupRuleDetailsExt'
+    type: object
+  controller.AddSecurityGroupRuleResponse:
+    properties:
+      security_group_rule:
+        $ref: '#/definitions/nhnutil.SecurityGroupRuleDetailsExt'
+    type: object
+  controller.CreateIpACLGroupResponse:
+    properties:
+      ipacl_group:
+        $ref: '#/definitions/nhnutil.IPACLGroupDetails'
+    type: object
+  controller.CreateIpACLTargetResponse:
+    properties:
+      ipacl_target:
+        $ref: '#/definitions/nhnutil.IPACLTargetDetails'
+    type: object
+  controller.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  controller.GetIpACLGroupsResponse:
+    properties:
+      ipacl_groups:
+        items:
+          $ref: '#/definitions/nhnutil.IPACLGroupDetails'
+        type: array
+    type: object
+  controller.GetIpACLTargetsResponse:
+    properties:
+      ipacl_targets:
+        items:
+          $ref: '#/definitions/nhnutil.IPACLTargetDetails'
+        type: array
+    type: object
+  controller.GetLoadBalancersResponse:
+    properties:
+      loadbalancers:
+        items:
+          $ref: '#/definitions/nhnutil.LoadBalancerDetails'
+        type: array
+    type: object
+  controller.GetNetworkACLsResponse:
+    properties:
+      acls:
+        items:
+          $ref: '#/definitions/nhnutil.NetworkACLDetails'
+        type: array
+    type: object
+  controller.GetSecurityGroupResponse:
+    properties:
+      security_group:
+        $ref: '#/definitions/nhnutil.SecurityGroupDetails'
+    type: object
+  controller.GetSecurityGroupsResponse:
+    properties:
+      security_groups:
+        items:
+          $ref: '#/definitions/nhnutil.SecurityGroupDetails'
+        type: array
+    type: object
+  controller.GetTokenResponse:
+    properties:
+      access:
+        $ref: '#/definitions/nhnutil.Access'
+    type: object
+  controller.GetUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  controller.GetUsersResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/model.MyUser'
+        type: array
+    type: object
+  controller.PatchUserRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  controller.PatchUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  controller.SetTokenIdResponse:
+    properties:
+      error:
+        type: string
+      result:
+        type: string
+    type: object
+  controller.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  controller.UpdateUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.BasicResponse:
+    properties:
+      error:
+        type: string
+      result:
+        type: string
+    type: object
+  model.MyUser:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  nhnutil.Access:
+    properties:
+      metadata:
+        $ref: '#/definitions/nhnutil.Metadata'
+      serviceCatalog:
+        items:
+          $ref: '#/definitions/nhnutil.ServiceCatalog'
+        type: array
+      token:
+        $ref: '#/definitions/nhnutil.Token'
+      user:
+        $ref: '#/definitions/nhnutil.User'
+    type: object
+  nhnutil.BoundPair:
+    properties:
+      ipacl_group_id:
+        type: string
+      loadbalancer_id:
+        type: string
+    type: object
+  nhnutil.Endpoint:
+    properties:
+      publicURL:
+        type: string
+      region:
+        type: string
+    type: object
+  nhnutil.IPACLGroupDetails:
+    properties:
+      action:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      ipacl_target_count:
+        type: string
+      loadbalancers:
+        items:
+          $ref: '#/definitions/nhnutil.LoadBalancerId'
+        type: array
+      name:
+        type: string
+      tenant_id:
+        type: string
+    type: object
+  nhnutil.IPACLGroupId:
+    properties:
+      ipacl_group_id:
+        type: string
+    type: object
+  nhnutil.IPACLTargetDetails:
+    properties:
+      cidr_address:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      ipacl_group_id:
+        type: string
+      tenant_id:
+        type: string
+    type: object
+  nhnutil.Listener:
+    properties:
+      id:
+        type: string
+    type: object
+  nhnutil.LoadBalancerDetails:
+    properties:
+      admin_state_up:
+        type: boolean
+      description:
+        type: string
+      id:
+        type: string
+      ipacl_group_action:
+        type: string
+      ipacl_groups:
+        items:
+          $ref: '#/definitions/nhnutil.IPACLGroupId'
+        type: array
+      listeners:
+        items:
+          $ref: '#/definitions/nhnutil.Listener'
+        type: array
+      loadbalancer_type:
+        type: string
+      name:
+        type: string
+      operating_status:
+        type: string
+      provider:
+        type: string
+      provisioning_status:
+        type: string
+      tenant_id:
+        type: string
+      vip_address:
+        type: string
+      vip_port_id:
+        type: string
+      vip_subnet_id:
+        type: string
+      workflow_status:
+        type: string
+    type: object
+  nhnutil.LoadBalancerId:
+    properties:
+      loadbalancer_id:
+        type: string
+    type: object
+  nhnutil.Metadata:
+    properties:
+      is_admin:
+        type: integer
+      roles:
+        items:
+          type: string
+        type: array
+    type: object
+  nhnutil.NetworkACLDetails:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      revision_number:
+        type: integer
+      tenant_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  nhnutil.Role:
+    properties:
+      name:
+        type: string
+    type: object
+  nhnutil.RoleLink:
+    type: object
+  nhnutil.SecurityGroupDetails:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      security_group_rules:
+        items:
+          $ref: '#/definitions/nhnutil.SecurityGroupRuleDetails'
+        type: array
+      tenant_id:
+        type: string
+    type: object
+  nhnutil.SecurityGroupRuleDetails:
+    properties:
+      description:
+        type: string
+      direction:
+        default: ingress
+        type: string
+      ethertype:
+        type: string
+      id:
+        type: string
+      port_range_max:
+        type: integer
+      port_range_min:
+        type: integer
+      protocol:
+        default: tcp
+        type: string
+      remote_group_id:
+        type: string
+      remote_ip_prefix:
+        type: string
+      security_group_id:
+        type: string
+      tenant_id:
+        type: string
+    type: object
+  nhnutil.SecurityGroupRuleDetailsExt:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      direction:
+        default: ingress
+        type: string
+      ethertype:
+        type: string
+      id:
+        type: string
+      port_range_max:
+        type: integer
+      port_range_min:
+        type: integer
+      project_id:
+        type: string
+      protocol:
+        default: tcp
+        type: string
+      remote_group_id:
+        type: string
+      remote_ip_prefix:
+        type: string
+      revision_number:
+        type: integer
+      security_group_id:
+        type: string
+      tenant_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  nhnutil.ServiceCatalog:
+    properties:
+      endpoints:
+        items:
+          $ref: '#/definitions/nhnutil.Endpoint'
+        type: array
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  nhnutil.Tenant:
+    properties:
+      RegionOne_sdn_preferred:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      groupId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      project_domain:
+        type: string
+    type: object
+  nhnutil.Token:
+    properties:
+      expires:
+        type: string
+      id:
+        type: string
+      issued_at:
+        type: string
+      tenant:
+        $ref: '#/definitions/nhnutil.Tenant'
+    type: object
+  nhnutil.User:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/nhnutil.Role'
+        type: array
+      roles_links:
+        items:
+          $ref: '#/definitions/nhnutil.RoleLink'
+        type: array
+      username:
+        type: string
+    type: object
+info:
+  contact:
+    email: AN_EMAIL
+    name: API Support
+    url: http://AN_ORG.github.io
+  description: Knock-knock REST API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Knock-knock REST API
+  version: latest
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Check knock-knock is alive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      summary: Check knock-knock is alive
+      tags:
+      - '[Admin] System management'
+  /nhn/acls:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of network ACLs on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of network ACLs returned from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetNetworkACLsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Get a list of network ACLs
+      tags:
+      - '[NHN Cloud] Network ACL'
+  /nhn/lbs:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of load balancers on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of load balancers returned from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetLoadBalancersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Get a list of load balancers
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/lbs/{id}/bind_ipacl_groups:
+    put:
+      consumes:
+      - application/json
+      description: Bind an IP access control list group (IP ACL group) to a load balancer
+        on NHN Cloud.
+      parameters:
+      - description: Load Balancer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: IP access control list group ID
+        in: body
+        name: body
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully binded
+          schema:
+            items:
+              $ref: '#/definitions/nhnutil.BoundPair'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Bind an IP access control list group (IP ACL group) to a load balancer
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/lbs/ipacl-groups:
+    get:
+      consumes:
+      - application/json
+      description: Get access control list groups (IP ACL groups) on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access control list groups (IP ACL groups) from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetIpACLGroupsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Get IP access control list groups (IP ACL groups)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+    post:
+      consumes:
+      - application/json
+      description: Create an access control list group (IP ACL group) on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An access control list group (IP ACL group) from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.CreateIpACLGroupResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Create an IP access control list group (IP ACL group)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/lbs/ipacl-groups/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an IP access control list group (IP ACL group) on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Delete an IP access control list group (IP ACL group)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/lbs/ipacl-targets:
+    get:
+      consumes:
+      - application/json
+      description: Get access control list targets (IP ACL targets) on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access control list targets (IP ACL targets) from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetIpACLTargetsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Get IP access control list targets (IP ACL targets)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+    post:
+      consumes:
+      - application/json
+      description: Create an access control list target (IP ACL target) on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: An access control list target (IP ACL target) from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.CreateIpACLTargetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Create an IP access control list target (IP ACL target)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/lbs/ipacl-targets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an IP access control list target (IP ACL target) on NHN
+        Cloud.
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Delete an IP access control list target (IP ACL target)
+      tags:
+      - '[NHN Cloud] Load Balancer'
+  /nhn/sg:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of security groups on NHN Cloud.
+      parameters:
+      - description: fields in security groups
+        in: query
+        name: fields
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of security groups returned from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetSecurityGroupsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Get a list of security groups
+      tags:
+      - '[NHN Cloud] Security Group'
+  /nhn/sg/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a security groups on NHN Cloud.
+      parameters:
+      - description: Security Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A security groups returned from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetSecurityGroupResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+      summary: Get a security group
+      tags:
+      - '[NHN Cloud] Security Group'
+  /nhn/sgRule:
+    post:
+      consumes:
+      - application/json
+      description: Create a rule to security group.
+      parameters:
+      - description: Values to create a rule to security group
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.AddSecurityGroupRuleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Result of creating a rule to security group
+          schema:
+            $ref: '#/definitions/controller.AddSecurityGroupRuleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      summary: Create a rule to security group
+      tags:
+      - '[NHN Cloud] Security Group'
+  /nhn/sgRule/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a security group rule.
+      parameters:
+      - description: a security group rule ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      summary: Delete a security group rule
+      tags:
+      - '[NHN Cloud] Security Group'
+  /nhn/token:
+    get:
+      consumes:
+      - application/json
+      description: Get a token on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A token returned from NHN Cloud
+          schema:
+            $ref: '#/definitions/controller.GetTokenResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+      summary: Get a token
+      tags:
+      - '[NHN Cloud] Token (for dev and test)'
+  /nhn/tokenId:
+    post:
+      consumes:
+      - application/json
+      description: Set a token ID on NHN Cloud.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Result of setting token ID
+          schema:
+            $ref: '#/definitions/controller.SetTokenIdResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+      summary: Set a token ID
+      tags:
+      - '[NHN Cloud] Token (for dev and test)'
+  /sample/users:
+    get:
+      consumes:
+      - application/json
+      description: Get information of all users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: (sample) This is a sample description for success response
+            in Swagger UI
+          schema:
+            $ref: '#/definitions/controller.GetUsersResponse'
+        "404":
+          description: User Not Found
+          schema:
+            type: object
+      summary: Get a list of users
+      tags:
+      - '[Sample] Users'
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the given information.
+      parameters:
+      - description: User information
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: (Sample) This is a sample description for success response
+            in Swagger UI
+          schema:
+            $ref: '#/definitions/controller.GetUserResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+      summary: Create a new user
+      tags:
+      - '[Sample] Users'
+  /sample/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user with the given information.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deletion successful
+          schema:
+            type: string
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+        "404":
+          description: User Not Found
+          schema:
+            type: object
+      summary: Delete a user
+      tags:
+      - '[Sample] Users'
+    get:
+      consumes:
+      - application/json
+      description: Get information of a user with a specific ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: (Sample) This is a sample description for success response
+            in Swagger UI
+          schema:
+            $ref: '#/definitions/controller.GetUserResponse'
+        "404":
+          description: User Not Found
+          schema:
+            type: object
+      summary: Get specific user information
+      tags:
+      - '[Sample] Users'
+    patch:
+      consumes:
+      - application/json
+      description: Patch a user with the given information.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User information to update
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/controller.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: (Sample) This is a sample description for success response
+            in Swagger UI
+          schema:
+            $ref: '#/definitions/controller.PatchUserResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+        "404":
+          description: User Not Found
+          schema:
+            type: object
+      summary: Patch a user
+      tags:
+      - '[Sample] Users'
+    put:
+      consumes:
+      - application/json
+      description: Update a user with the given information.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User information to update
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: (Sample) This is a sample description for success response
+            in Swagger UI
+          schema:
+            $ref: '#/definitions/controller.UpdateUserResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            type: object
+      summary: Update a user
+      tags:
+      - '[Sample] Users'
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token (get token in http://localhost:8056/auth)
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -9,7 +9,6 @@ import (
 
 	//_ "github.com/go-sql-driver/mysql"
 	"github.com/fsnotify/fsnotify"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
 
 	restServer "github.com/yunkon-kim/knock-knock/pkg/api/rest/server"
