@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,39 +19,52 @@ func Init() {
 	viper.AddConfigPath("../../conf/") // config for development
 	viper.AddConfigPath(".")           // config for production optionally looking for the configuration in the working directory
 	viper.AddConfigPath("./conf/")     // config for production optionally looking for the configuration in the working directory/conf/
-	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
+
+	// Load main configuration
+	viper.SetConfigName("config")
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Printf("no main config file, using default settings: %s\n", err)
+		log.Printf("no main config file, using default settings: %s", err)
+	}
+
+	// Load secrets configuration
+	viper.SetConfigName("secrets")
+	err = viper.MergeInConfig() // Merge in the secrets config
+	if err != nil {
+		fmt.Printf("no reading secrets config file: %s\n", err)
+		log.Fatalf("no reading secrets config file: %s", err)
+	}
 
 	// Map environment variable names to config file key names
 	replacer := strings.NewReplacer(".", "_")
 	viper.SetEnvKeyReplacer(replacer)
 
+	// NOTE - the environment variable has higher priority than the config file
 	// Automatically recognize environment variables
 	viper.AutomaticEnv()
 
-	// Try to read the config file in development environment
-	if viper.GetString("node.env") != "production" {
-		if err := viper.ReadInConfig(); err != nil {
-			log.Printf("Error reading config file, using default settings: %s", err)
-		}
-	}
-
 	// Values set in runtime
 	if viper.GetString("knockknock.root") == "" {
+		fmt.Println("find project root by using project name")
 		log.Println("find project root by using project name")
 
 		projectName := "knock-knock"
 		// Get the executable path
 		execPath, err := os.Executable()
 		if err != nil {
+			fmt.Printf("Error getting executable path: %v\n", err)
 			log.Fatalf("Error getting executable path: %v", err)
 		}
 		execDir := filepath.Dir(execPath)
 		projectRoot, err := checkProjectRootInParentDirectory(projectName, execDir)
 		if err != nil {
+			fmt.Printf("set current directory as project root directory (%v)\n", err)
 			log.Printf("set current directory as project root directory (%v)", err)
 			projectRoot = execDir
 		}
+		fmt.Printf("project root directory: %s\n", projectRoot)
 		log.Printf("project root directory: %s\n", projectRoot)
 		// Set the binary path
 		viper.Set("knockknock.root", projectRoot)
@@ -59,7 +73,9 @@ func Init() {
 
 	// Recursively print all keys and values in Viper
 	settings := viper.AllSettings()
-	recursivePrintMap(settings, "")
+	if viper.GetString("node.env") == "development" {
+		recursivePrintMap(settings, "")
+	}
 }
 
 func checkProjectRootInParentDirectory(projectName string, execDir string) (string, error) {

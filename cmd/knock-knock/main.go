@@ -7,17 +7,17 @@ import (
 	"strconv"
 	"sync"
 
+	// Black import (_) is for running a package's init() function without using its other contents.
+	"github.com/rs/zerolog/log"
+	_ "github.com/yunkon-kim/knock-knock/internal/config"
+	_ "github.com/yunkon-kim/knock-knock/internal/logger"
+
 	//_ "github.com/go-sql-driver/mysql"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 
 	restServer "github.com/yunkon-kim/knock-knock/pkg/api/rest/server"
 	frontendServer "github.com/yunkon-kim/knock-knock/web/server"
-
-	// Black import (_) is for running a package's init() function without using its other contents.
-	"github.com/rs/zerolog/log"
-	_ "github.com/yunkon-kim/knock-knock/internal/config"
-	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 )
 
 func main() {
