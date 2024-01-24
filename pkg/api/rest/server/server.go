@@ -115,31 +115,31 @@ func RunServer(port string) {
 	// iam := iam.NewIdentityAccessManager(baseUrl, realm, clientId, clientSecret)
 
 	// Conditions to prevent abnormal operation due to typos (e.g., ture, falss, etc.)
-	enableAuth := viper.GetString("api.auth.enabled") == "true"
+	// enableAuth := viper.GetString("api.auth.enabled") == "true"
 
-	apiUser := viper.GetString("api.username")
-	apiPass := viper.GetString("api.password")
+	// apiUser := viper.GetString("api.username")
+	// apiPass := viper.GetString("api.password")
 
-	if enableAuth {
-		// e.Use(middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
-		// 	// Skip authentication for some routes that do not require authentication
-		// 	Skipper: func(c echo.Context) bool {
-		// 		if c.Path() == "/knock-knock/health" ||
-		// 			c.Path() == "/knock-knock/httpVersion" {
-		// 			return true
-		// 		}
-		// 		return false
-		// 	},
-		// 	Validator: func(username, password string, c echo.Context) (bool, error) {
-		// 		// Be careful to use constant time comparison to prevent timing attacks
-		// 		if subtle.ConstantTimeCompare([]byte(username), []byte(apiUser)) == 1 &&
-		// 			subtle.ConstantTimeCompare([]byte(password), []byte(apiPass)) == 1 {
-		// 			return true, nil
-		// 		}
-		// 		return false, nil
-		// 	},
-		// }))
-	}
+	// if enableAuth {
+	// e.Use(middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
+	// 	// Skip authentication for some routes that do not require authentication
+	// 	Skipper: func(c echo.Context) bool {
+	// 		if c.Path() == "/knock-knock/health" ||
+	// 			c.Path() == "/knock-knock/httpVersion" {
+	// 			return true
+	// 		}
+	// 		return false
+	// 	},
+	// 	Validator: func(username, password string, c echo.Context) (bool, error) {
+	// 		// Be careful to use constant time comparison to prevent timing attacks
+	// 		if subtle.ConstantTimeCompare([]byte(username), []byte(apiUser)) == 1 &&
+	// 			subtle.ConstantTimeCompare([]byte(password), []byte(apiPass)) == 1 {
+	// 			return true, nil
+	// 		}
+	// 		return false, nil
+	// 	},
+	// }))
+	// }
 
 	fmt.Println("\n \n ")
 	fmt.Print(banner)
@@ -165,15 +165,6 @@ func RunServer(port string) {
 	// Sample API group (for developers to add new API)
 	groupSample := groupBase.Group("/sample")
 	route.RegisterSampleRoutes(groupSample)
-
-	selfEndpoint := viper.GetString("self.endpoint")
-	apidashboard := " http://" + selfEndpoint + "/knock-knock/swagger/index.html"
-
-	if enableAuth {
-		fmt.Println(" Access to API dashboard" + " (username: " + apiUser + " / password: " + apiPass + ")")
-	}
-	fmt.Printf(noticeColor, apidashboard)
-	fmt.Println("\n ")
 
 	// A context for graceful shutdown (It is based on the signal package)selfEndpoint := os.Getenv("SELF_ENDPOINT")
 	// NOTE -
@@ -213,4 +204,22 @@ func RunServer(port string) {
 	}
 
 	wg.Wait()
+}
+
+func DisplayEndpoints() {
+	// Conditions to prevent abnormal operation due to typos (e.g., ture, falss, etc.)
+	enableAuth := viper.GetString("api.auth.enabled") == "true"
+	apiUser := viper.GetString("api.username")
+	apiPass := viper.GetString("api.password")
+
+	selfEndpoint := viper.GetString("self.endpoint")
+	apidashboard := " http://" + selfEndpoint + "/knock-knock/swagger/index.html"
+
+	fmt.Print("\n Access to API dashboard")
+	if enableAuth {
+		fmt.Print(" (username: " + apiUser + " / password: " + apiPass + ")")
+	}
+	fmt.Println()
+	fmt.Printf(noticeColor, apidashboard)
+	fmt.Println("\n ")
 }

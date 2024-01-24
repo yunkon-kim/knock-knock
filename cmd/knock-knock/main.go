@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
@@ -70,8 +71,8 @@ func main() {
 
 	// Launch API servers (REST)
 	wg := new(sync.WaitGroup)
-	wg.Add(1)
 
+	wg.Add(1)
 	// Start REST Server
 	go func() {
 		restServer.RunServer(*backendPort)
@@ -79,12 +80,15 @@ func main() {
 	}()
 
 	wg.Add(1)
-
 	// Start Frontend Server
 	go func() {
 		frontendServer.RunFrontendServer(*frontendPort)
 		wg.Done()
 	}()
+
+	time.Sleep(1 * time.Second)
+	restServer.DisplayEndpoints()
+	frontendServer.DisplayEndpoints()
 
 	wg.Wait()
 }

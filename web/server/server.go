@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -121,12 +122,6 @@ func RunFrontendServer(port string) {
 	routes.LoadBalancer(svc)
 	routes.IpACLGroup(svc)
 
-	//
-	frontendUrl := " http://localhost:8888/"
-
-	fmt.Printf(noticeColor, frontendUrl)
-	fmt.Println("\n ")
-
 	// A context for graceful shutdown (It is based on the signal package)selfEndpoint := os.Getenv("SELF_ENDPOINT")
 	// NOTE -
 	// Use os.Interrupt Ctrl+C or Ctrl+Break on Windows
@@ -166,4 +161,20 @@ func RunFrontendServer(port string) {
 	}
 
 	wg.Wait()
+}
+
+func DisplayEndpoints() {
+	selfEndpoint := viper.GetString("self.endpoint")
+
+	// Split the selfEndpoint string based on the colon delimiter
+	endpointParts := strings.Split(selfEndpoint, ":")
+
+	// Retrieve the IP address from the first element of the resulting slice
+	ip := endpointParts[0]
+
+	frontendUrl := " http://" + ip + ":8888/"
+
+	fmt.Println(" Access to Knock-knock website")
+	fmt.Printf(noticeColor, frontendUrl)
+	fmt.Println("\n ")
 }
