@@ -10,8 +10,9 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/controller"
-	"github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares"
+	middlewares "github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares/custom-middlewares"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/route"
+	"github.com/yunkon-kim/knock-knock/pkg/iam"
 
 	"fmt"
 	"os"
@@ -159,8 +160,13 @@ func RunServer(port string) {
 
 	// NHN Cloud API group
 	groupNHN := groupBase.Group("/nhn")
-	groupNHN.Use(middlewares.JWTAuth())
+	groupNHN.Use(iam.JWTAuthMW())
 	route.RegisterNHNRoutes(groupNHN)
+
+	// TB auth test
+	groupTb := groupBase.Group("/tb")
+	groupTb.Use(iam.JWTAuthMW())
+	groupTb.GET("/auth/test", controller.TbAuthTest)
 
 	// Sample API group (for developers to add new API)
 	groupSample := groupBase.Group("/sample")

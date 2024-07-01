@@ -2,17 +2,14 @@ package controller
 
 import (
 	"context"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
-	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
+	"github.com/yunkon-kim/knock-knock/pkg/iam"
 	"golang.org/x/oauth2"
 )
 
@@ -24,9 +21,9 @@ var (
 
 	// Session store의 키 값
 	// TODO: randomize it
-	key = []byte("super-secret-key")
+	// key = []byte("super-secret-key")
 
-	maxAge = 60 * 30 // 30 minutes
+	// maxAge = 60 * 30 // 30 minutes
 )
 
 func init() {
@@ -44,6 +41,17 @@ func init() {
 }
 
 func LoginKeycloak(c echo.Context) error {
+
+	// Keycloak OAuth2 configuration
+	keycloakOauthConfig = &oauth2.Config{
+		ClientID:     viper.GetString("keycloak.backend.clientId"),
+		ClientSecret: viper.GetString("keycloak.backend.clientSecret"),
+		RedirectURL:  viper.GetString("keycloak.backend.redirectUrl"),
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  viper.GetString("keycloak.authURL"),
+			TokenURL: viper.GetString("keycloak.tokenURL"),
+		},
+	}
 
 	url := keycloakOauthConfig.AuthCodeURL(oauthStateString)
 	return c.Redirect(http.StatusMovedPermanently, url)
@@ -66,7 +74,7 @@ func DisplayToken(c echo.Context) error {
 
 	// Parse JWT token
 	claims := jwt.MapClaims{}
-	jwtToken, err := jwt.ParseWithClaims(token.AccessToken, claims, getKey)
+	jwtToken, err := jwt.ParseWithClaims(token.AccessToken, claims, iam.GetKey)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -91,37 +99,4 @@ Copy this token and paste it to the Swagger UI. <br><br>
 `, jwtToken.Raw)
 
 	return c.HTML(http.StatusOK, page)
-}
-
-// parseKeycloakRSAPublicKey parses the RSA public key from the base64 string.
-func parseKeycloakRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
-	buf, err := base64.StdEncoding.DecodeString(base64Str)
-	if err != nil {
-		return nil, err
-	}
-	parsedKey, err := x509.ParsePKIXPublicKey(buf)
-	if err != nil {
-		return nil, err
-	}
-	publicKey, ok := parsedKey.(*rsa.PublicKey)
-	if ok {
-		return publicKey, nil
-	}
-	return nil, fmt.Errorf("unexpected key type %T", publicKey)
-}
-
-// getKey returns the public key for verifying the JWT token.
-func getKey(token *jwt.Token) (interface{}, error) {
-
-	base64Str := viper.GetString("keycloak.realmRS256PublicKey")
-	publicKey, _ := parseKeycloakRSAPublicKey(base64Str)
-
-	key, _ := jwk.New(publicKey)
-
-	var pubkey interface{}
-	if err := key.Raw(&pubkey); err != nil {
-		return nil, fmt.Errorf("unable to get the public key. error: %s", err.Error())
-	}
-
-	return pubkey, nil
 }

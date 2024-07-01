@@ -2,17 +2,13 @@ package handlers
 
 import (
 	"context"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/spf13/viper"
 
 	"github.com/labstack/echo-contrib/session"
@@ -21,7 +17,7 @@ import (
 	"github.com/yunkon-kim/knock-knock/internal/slack"
 	"golang.org/x/oauth2"
 
-	"github.com/gookit/goutil"
+	"github.com/yunkon-kim/knock-knock/pkg/iam"
 )
 
 var (
@@ -78,7 +74,7 @@ func AuthCallback(c echo.Context) error {
 
 	// Parse JWT token
 	claims := jwt.MapClaims{}
-	jwtToken, err := jwt.ParseWithClaims(token.AccessToken, claims, getKey)
+	jwtToken, err := jwt.ParseWithClaims(token.AccessToken, claims, iam.GetKey)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -90,15 +86,15 @@ func AuthCallback(c echo.Context) error {
 		c.String(http.StatusUnauthorized, "failed to cast claims as jwt.MapClaims")
 	}
 
-	roles := parseRealmRoles(claims)
+	roles := iam.ParseRealmRoles(claims)
 
 	// Check this user's role
 	var role = ""
-	if goutil.Contains(roles, "maintainer") {
+	if iam.HasRole(roles, "maintainer") {
 		role = "Maintainer"
-	} else if goutil.Contains(roles, "admin") {
+	} else if iam.HasRole(roles, "admin") {
 		role = "Admin"
-	} else if goutil.Contains(roles, "user") {
+	} else if iam.HasRole(roles, "user") {
 		role = "User"
 	} else {
 		role = "Guest"
@@ -173,50 +169,4 @@ func AuthCallback(c echo.Context) error {
 	slack.PostMessage(fmt.Sprintf("%s logged in", claims["name"]))
 
 	return c.Redirect(http.StatusFound, "/kk/home.html")
-}
-
-// parseKeycloakRSAPublicKey parses the RSA public key from the base64 string.
-func parseKeycloakRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
-	buf, err := base64.StdEncoding.DecodeString(base64Str)
-	if err != nil {
-		return nil, err
-	}
-	parsedKey, err := x509.ParsePKIXPublicKey(buf)
-	if err != nil {
-		return nil, err
-	}
-	publicKey, ok := parsedKey.(*rsa.PublicKey)
-	if ok {
-		return publicKey, nil
-	}
-	return nil, fmt.Errorf("unexpected key type %T", publicKey)
-}
-
-// getKey returns the public key for verifying the JWT token.
-func getKey(token *jwt.Token) (interface{}, error) {
-
-	base64Str := viper.GetString("keycloak.realmRS256PublicKey")
-	publicKey, _ := parseKeycloakRSAPublicKey(base64Str)
-
-	key, _ := jwk.New(publicKey)
-
-	var pubkey interface{}
-	if err := key.Raw(&pubkey); err != nil {
-		return nil, fmt.Errorf("unable to get the public key. error: %s", err.Error())
-	}
-
-	return pubkey, nil
-}
-
-func parseRealmRoles(claims jwt.MapClaims) []string {
-	var realmRoles []string = make([]string, 0)
-
-	if claim, ok := claims["realm_access"]; ok {
-		if roles, ok := claim.(map[string]interface{})["roles"]; ok {
-			for _, role := range roles.([]interface{}) {
-				realmRoles = append(realmRoles, role.(string))
-			}
-		}
-	}
-	return realmRoles
 }
