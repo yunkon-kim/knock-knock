@@ -10,6 +10,19 @@ definitions:
       security_group_rule:
         $ref: '#/definitions/nhnutil.SecurityGroupRuleDetailsExt'
     type: object
+  controller.AuthsInfo:
+    properties:
+      authenticated:
+        type: boolean
+      expired-time:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+    type: object
   controller.CreateIpACLGroupResponse:
     properties:
       ipacl_group:
@@ -1060,6 +1073,35 @@ paths:
       summary: Update a user
       tags:
       - '[Sample] Users'
+  /tb/auth/test:
+    get:
+      consumes:
+      - application/json
+      description: Auth test with TB.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Auth info for test
+          schema:
+            $ref: '#/definitions/controller.AuthsInfo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.BasicResponse'
+      security:
+      - Bearer: []
+      summary: Auth test with TB.
+      tags:
+      - '[Auth] Test with TB'
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token (get token in http://localhost:8056/auth)

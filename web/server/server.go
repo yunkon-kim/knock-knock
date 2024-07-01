@@ -24,7 +24,8 @@ import (
 	_ "github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 
-	"github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares"
+	middlewares "github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares/custom-middlewares"
+	"github.com/yunkon-kim/knock-knock/pkg/iam"
 	"github.com/yunkon-kim/knock-knock/web/routes"
 )
 
@@ -114,7 +115,7 @@ func RunFrontendServer(port string) {
 	routes.Auth(e)
 
 	g := e.Group("/kk")
-	g.Use(middlewares.SessionChecker)
+	g.Use(iam.SessionCheckerMW)
 	routes.Main(g)
 
 	svc := g.Group("/svc")

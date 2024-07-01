@@ -971,6 +971,52 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tb/auth/test": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Auth test with TB.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Auth] Test with TB"
+                ],
+                "summary": "Auth test with TB.",
+                "responses": {
+                    "200": {
+                        "description": "Auth info for test",
+                        "schema": {
+                            "$ref": "#/definitions/controller.AuthsInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.BasicResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -987,6 +1033,26 @@ const docTemplate = `{
             "properties": {
                 "security_group_rule": {
                     "$ref": "#/definitions/nhnutil.SecurityGroupRuleDetailsExt"
+                }
+            }
+        },
+        "controller.AuthsInfo": {
+            "type": "object",
+            "properties": {
+                "authenticated": {
+                    "type": "boolean"
+                },
+                "expired-time": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         },
