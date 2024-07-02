@@ -27,12 +27,18 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Tables - Basic Tables | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <title>
+      Tables - Basic Tables | Sneat - Bootstrap 5 HTML Admin Template - Pro
+    </title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/assets/img/favicon/favicon.ico"
+    />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,12 +52,23 @@
     <link rel="stylesheet" href="/assets/vendor/fonts/boxicons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/css/core.css"
+      class="template-customizer-core-css"
+    />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/css/theme-default.css"
+      class="template-customizer-theme-css"
+    />
     <link rel="stylesheet" href="/assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
+    />
 
     <!-- Page CSS -->
     <style>
@@ -77,13 +94,21 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <aside
+          id="layout-menu"
+          class="layout-menu menu-vertical menu bg-menu-theme"
+        >
           <div class="app-brand demo">
             <a href="home.html" class="app-brand-link">
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">Knock-knock</span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2"
+                >Knock-knock</span
+              >
             </a>
 
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <a
+              href="javascript:void(0);"
+              class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            >
               <i class="bx bx-chevron-left bx-sm align-middle"></i>
             </a>
           </div>
@@ -93,34 +118,36 @@
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
             <li class="menu-item">
-                <a href="home.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Home</div>
-                </a>
+              <a href="home.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Home</div>
+              </a>
             </li>
-        
+
             <!-- Access Control -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Network</span></li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Network</span>
+            </li>
             <!-- Security Group -->
             <li class="menu-item">
-                <a href="security-group.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-table"></i>
-                    <div data-i18n="Tables">Security Group</div>
-                </a>
+              <a href="security-group.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Security Group</div>
+              </a>
             </li>
             <!-- Load Balancer -->
             <li class="menu-item">
               <a href="load-balancer.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Tables">Load Balancer</div>
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Load Balancer</div>
               </a>
             </li>
 
             <!-- IP ACL groups -->
             <li class="menu-item active">
               <a href="ip-acl-group.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Tables">IP ACL groups</div>
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">IP ACL groups</div>
               </a>
             </li>
           </ul>
@@ -129,7 +156,6 @@
 
         <!-- Layout container -->
         <div class="layout-page">
-          
           {{ template "nav.html" . }}
 
           <!-- Content wrapper -->
@@ -138,64 +164,146 @@
 
             <!-- IP ACL Groups -->
             <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">NHN Cloud /</span> IP access control list groups (ACL groups)</h4>
+              <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">NHN Cloud /</span> IP access
+                control list groups (ACL groups)
+              </h4>
 
               <!-- Button trigger modal for adding a IP ACL group to the group -->
-              <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-ipacl-group-create">Create</button>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modal-ipacl-group-create"
+              >
+                Create
+              </button>
 
               <!-- Modal -->
-              <div class="modal fade" id="modal-ipacl-group-create" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+              <div
+                class="modal fade"
+                id="modal-ipacl-group-create"
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <div
+                  class="modal-dialog modal-dialog-centered modal-lg"
+                  role="document"
+                >
                   <div class="modal-content">
-
                     <div class="modal-header">
-                      <h5 class="modal-title">Fill in this form to create a IP ACL group</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      <h5 class="modal-title">
+                        Fill in this form to create a IP ACL group
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
                     </div>
 
                     <div class="modal-body">
                       <div class="row">
                         <div class="col mb-3">
-                          <label for="nameBackdrop" class="form-label">Name</label>
-                          <input type="text" id="ipacl-group-name" class="form-control" placeholder="IP ACL group name (no space, '-' or '_' allowed)"
+                          <label for="nameBackdrop" class="form-label"
+                            >Name</label
+                          >
+                          <input
+                            type="text"
+                            id="ipacl-group-name"
+                            class="form-control"
+                            placeholder="IP ACL group name (no space, '-' or '_' allowed)"
                           />
                         </div>
                       </div>
                       <div class="row">
                         <div class="col mb-3">
-                          <label for="nameBackdrop" class="form-label">Action</label>                        
+                          <label for="nameBackdrop" class="form-label"
+                            >Action</label
+                          >
                           <!-- Radio -->
-                          <div class="ipacl-group-action-group" role="group" aria-label="Basic radio toggle button group">
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" checked autocomplete="off" />
-                            <label class="btn btn-outline-secondary" for="btnradio1">ALLOW</label>
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
-                            <label class="btn btn-outline-secondary" for="btnradio2">DENY</label>
+                          <div
+                            class="ipacl-group-action-group"
+                            role="group"
+                            aria-label="Basic radio toggle button group"
+                          >
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="btnradio"
+                              id="btnradio1"
+                              checked
+                              autocomplete="off"
+                            />
+                            <label
+                              class="btn btn-outline-secondary"
+                              for="btnradio1"
+                              >ALLOW</label
+                            >
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="btnradio"
+                              id="btnradio2"
+                              autocomplete="off"
+                            />
+                            <label
+                              class="btn btn-outline-secondary"
+                              for="btnradio2"
+                              >DENY</label
+                            >
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div class="modal-header">
-                      <h5 class="modal-title">Add an IP access control list target optionally.</h5>      
+                      <h5 class="modal-title">
+                        Add an IP access control list target optionally.
+                      </h5>
                     </div>
-                    <div class="modal-body">                      
-                      <div class="row">                        
+                    <div class="modal-body">
+                      <div class="row">
                         <div class="col mb-3">
-                          <label for="direction" class="form-label">CIDR address</label>
-                          <input type="text" id="ipacl-target-cidr-addresses" class="form-control" placeholder="123.123.123.123 or 123.123.0.0/16"/>
+                          <label for="direction" class="form-label"
+                            >CIDR address</label
+                          >
+                          <input
+                            type="text"
+                            id="ipacl-target-cidr-addresses"
+                            class="form-control"
+                            placeholder="123.123.123.123 or 123.123.0.0/16"
+                          />
                         </div>
                         <div class="col mb-3">
-                          <label for="protocol" class="form-label">Description</label>
-                          <input type="text" id="ipacl-target-description" class="form-control" placeholder="Jack, Jill, and etc."/>
+                          <label for="protocol" class="form-label"
+                            >Description</label
+                          >
+                          <input
+                            type="text"
+                            id="ipacl-target-description"
+                            class="form-control"
+                            placeholder="Jack, Jill, and etc."
+                          />
                         </div>
                       </div>
                     </div>
 
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                      >
                         Cancel
                       </button>
-                      <button type="button" class="btn btn-primary create-ipacl-group-btn">Create</button>
+                      <button
+                        type="button"
+                        class="btn btn-primary create-ipacl-group-btn"
+                      >
+                        Create
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -216,30 +324,57 @@
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody id="ipacl-group-container" class="table-border-bottom-0">
+                    <tbody
+                      id="ipacl-group-container"
+                      class="table-border-bottom-0"
+                    >
                       {{range .IpaclGroups}}
                       <tr id="ipacl-group-element-{{.Id}}">
                         <td><strong>{{.Name}}</strong></td>
-                        <td id="ipacl-group-id-{{.Id}}" class="ipacl-group-id" data-id="{{.Id}}">{{.Id}}</td>
+                        <td
+                          id="ipacl-group-id-{{.Id}}"
+                          class="ipacl-group-id"
+                          data-id="{{.Id}}"
+                        >
+                          {{.Id}}
+                        </td>
                         <td>{{.Action}}</td>
                         <td>
                           {{range .LoadBalancers}}
-                          <div>
-                            {{.LoadBalancerId}}
-                          </div>
+                          <div>{{.LoadBalancerId}}</div>
                           {{end}}
                         </td>
-                        <td>{{if .Description}}{{.Description}}{{else}}-{{end}}</td>
+                        <td>
+                          {{if .Description}}{{.Description}}{{else}}-{{end}}
+                        </td>
                         <td>
                           <!-- Button trigger for deleting a IP ACL group -->
-                          <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-ipacl-group-{{.Id}}">Delete</button>
-                          
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-ipacl-group-{{.Id}}"
+                          >
+                            Delete
+                          </button>
+
                           <!-- Modal -->
-                          <div class="modal fade" id="modal-ipacl-group-{{.Id}}" tabindex="-1" aria-hidden="true" data-id="{{.Id}}">
-                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                          <div
+                            class="modal fade"
+                            id="modal-ipacl-group-{{.Id}}"
+                            tabindex="-1"
+                            aria-hidden="true"
+                            data-id="{{.Id}}"
+                          >
+                            <div
+                              class="modal-dialog modal-lg modal-dialog-centered"
+                              role="document"
+                            >
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title">Delete an IP ACL group</h5>
+                                  <h5 class="modal-title">
+                                    Delete an IP ACL group
+                                  </h5>
                                   <button
                                     type="button"
                                     class="btn-close"
@@ -251,9 +386,16 @@
                                   <div class="row">
                                     <div class="col mb-3">
                                       <div class="alert alert-danger">
-                                        WARNING: Are you sure you want to delete this IP ACL group? This action cannot be undone.
+                                        WARNING: Are you sure you want to delete
+                                        this IP ACL group? This action cannot be
+                                        undone.
                                       </div>
-                                      <label for="confirmText" class="form-label">To confirm deletion, type <i>delete</i> in the field:</label>
+                                      <label
+                                        for="confirmText"
+                                        class="form-label"
+                                        >To confirm deletion, type
+                                        <i>delete</i> in the field:</label
+                                      >
                                       <input
                                         type="text"
                                         id="confirmText"
@@ -264,15 +406,24 @@
                                   </div>
                                 </div>
                                 <div class="modal-footer">
-                                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                  <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal"
+                                  >
                                     Cancel
                                   </button>
-                                  <button type="button" class="btn btn-danger delete-ipactl-group-btn">Delete</button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger delete-ipactl-group-btn"
+                                  >
+                                    Delete
+                                  </button>
                                 </div>
                               </div>
                             </div>
-                          </div>  
-                        </td>                      
+                          </div>
+                        </td>
                       </tr>
                       {{end}}
                     </tbody>
@@ -280,16 +431,14 @@
                 </div>
               </div>
               <!--/ Hoverable Table rows -->
-              
             </div>
 
-            
-            <!-- IP ACL Targets -->            
-            <div id="ipacl-targets-section" class="container-xxl flex-grow-1 container-p-y">              
-              
-            </div>
-            
-            
+            <!-- IP ACL Targets -->
+            <div
+              id="ipacl-targets-section"
+              class="container-xxl flex-grow-1 container-p-y"
+            ></div>
+
             <!-- / Content -->
 
             {{ template "footer.html" . }}
@@ -306,7 +455,7 @@
     </div>
     <!-- / Layout wrapper -->
 
-{{/*
+    {{/*
     <div class="buy-now">
       <a
         href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
@@ -315,7 +464,7 @@
         >Upgrade to Pro</a
       >
     </div>
-*/}}
+    */}}
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="/assets/vendor/libs/jquery/jquery.js"></script>
@@ -333,17 +482,16 @@
 
     <!-- Page JS -->
     <script>
-
       let name;
       let role;
 
       function getValueFromCookies(key) {
-        const cookies = document.cookie.split(';');
+        const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
           const cookie = cookies[i].trim();
-          const [k, v] = cookie.split('=');
+          const [k, v] = cookie.split("=");
           if (k === key) {
-            value = v.replace(/"/g, '');
+            value = v.replace(/"/g, "");
             return value;
           }
         }
@@ -352,85 +500,106 @@
 
       // Handling the 'create' button click
       function handleCreateIpACLGroupButtonClick() {
-        const ipaclGroupName = document.getElementById('ipacl-group-name').value;
+        const ipaclGroupName =
+          document.getElementById("ipacl-group-name").value;
         const ipaclGroupAction = getSelectedIpaclGroupAction();
-        const ipaclTargetCidrAddress = document.getElementById('ipacl-target-cidr-addresses').value;
-        const ipaclTargetDescription = document.getElementById('ipacl-target-description').value;
+        const ipaclTargetCidrAddress = document.getElementById(
+          "ipacl-target-cidr-addresses"
+        ).value;
+        const ipaclTargetDescription = document.getElementById(
+          "ipacl-target-description"
+        ).value;
 
-        if (ipaclGroupName == null || ipaclGroupName == '') {
-          alert('Please enter a IP ACL group name.');
+        if (ipaclGroupName == null || ipaclGroupName == "") {
+          alert("Please enter a IP ACL group name.");
           return;
-        } else if (ipaclGroupName.includes(' ')){
-          alert("IP ACL group name cannot contain space. It's possible to use '-' or '_'.");
+        } else if (ipaclGroupName.includes(" ")) {
+          alert(
+            "IP ACL group name cannot contain space. It's possible to use '-' or '_'."
+          );
           return;
         }
 
         // AJAX request to server for creating a IP access control list group
         const data = {
-          "ipacl_group": {
-            "action": ipaclGroupAction,
-            "name": ipaclGroupName,
-            "ipacl_targets": [
+          ipacl_group: {
+            action: ipaclGroupAction,
+            name: ipaclGroupName,
+            ipacl_targets: [
               {
-                "cidr_address": ipaclTargetCidrAddress,
-                "description": ipaclTargetDescription
-              }
-            ]
-          }
+                cidr_address: ipaclTargetCidrAddress,
+                description: ipaclTargetDescription,
+              },
+            ],
+          },
         };
 
-        fetch('/kk/svc/ipacl-groups', {
-          method: 'POST',
+        fetch("/kk/svc/ipacl-groups", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         })
-        .then(response => {
-          console.log(response);
-          if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('data:');
-          console.log(data);
-          ipaclGroup = data.ipacl_group;
-          
-          if (ipaclGroup.description == undefined) {
-            ipaclGroup.description = "";
-          }
+          .then((response) => {
+            console.log(response);
+            if (!response.ok) {
+              throw new Error(
+                "Network response was not ok: " + response.statusText
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("data:");
+            console.log(data);
+            ipaclGroup = data.ipacl_group;
 
-          appendGroupRowHTML(ipaclGroup);
+            if (ipaclGroup.description == undefined) {
+              ipaclGroup.description = "";
+            }
 
-          // Binding events to the new elements
-          // Bind click event to an ID `tr` of IP ACL group            
-          const newTd = document.querySelector('#ipacl-group-id-' + ipaclGroup.id);
-          newTd.addEventListener('click', handleRowClick);
+            appendGroupRowHTML(ipaclGroup);
 
-          // Bind the 'delete' click event to the new button
-          const newButton = document.querySelector('#modal-ipacl-group-' + ipaclGroup.id + ' .delete-ipactl-group-btn');
-          newButton.addEventListener('click', handleDeleteIpACLGroupButtonClick);            
+            // Binding events to the new elements
+            // Bind click event to an ID `tr` of IP ACL group
+            const newTd = document.querySelector(
+              "#ipacl-group-id-" + ipaclGroup.id
+            );
+            newTd.addEventListener("click", handleRowClick);
 
-          // Close the modal using Bootstrap's JavaScript method
-          var createIpACLGroupModalElement = document.getElementById('modal-ipacl-group-create');
-          var createIpACLGroupModal = bootstrap.Modal.getInstance(createIpACLGroupModalElement);
-          createIpACLGroupModal.hide();
+            // Bind the 'delete' click event to the new button
+            const newButton = document.querySelector(
+              "#modal-ipacl-group-" +
+                ipaclGroup.id +
+                " .delete-ipactl-group-btn"
+            );
+            newButton.addEventListener(
+              "click",
+              handleDeleteIpACLGroupButtonClick
+            );
 
-          // Reset the form
-          document.getElementById('ipacl-group-name').value = '';
-          document.getElementById('ipacl-target-cidr-addresses').value = '';
-          document.getElementById('ipacl-target-description').value = '';
+            // Close the modal using Bootstrap's JavaScript method
+            var createIpACLGroupModalElement = document.getElementById(
+              "modal-ipacl-group-create"
+            );
+            var createIpACLGroupModal = bootstrap.Modal.getInstance(
+              createIpACLGroupModalElement
+            );
+            createIpACLGroupModal.hide();
 
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          // Handle error response
-        });
+            // Reset the form
+            document.getElementById("ipacl-group-name").value = "";
+            document.getElementById("ipacl-target-cidr-addresses").value = "";
+            document.getElementById("ipacl-target-description").value = "";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            // Handle error response
+          });
       }
 
-      function appendGroupRowHTML(group){
+      function appendGroupRowHTML(group) {
         // Constructing a new HTML element for the created IP ACL group
         ipaclGroupRowHtml = `
         <tr id="ipacl-group-element-${group.id}">
@@ -438,16 +607,16 @@
           <td id="ipacl-group-id-${group.id}" class="ipacl-group-id" data-id="${group.id}">${group.id}</td>
           <td>${group.action}</td>
           <td>`;
-            if (group.loadbalancers !== undefined) {
-              group.loadbalancers.forEach((loadBalancer) => {
-              newHtml += `
+        if (group.loadbalancers !== undefined) {
+          group.loadbalancers.forEach((loadBalancer) => {
+            newHtml += `
               <div>
                 ${loadBalancer.loadbalancer_id}
               </div>`;
-            });
-          }
+          });
+        }
 
-          ipaclGroupRowHtml += `              
+        ipaclGroupRowHtml += `              
           </td>
           <td>${group.description}</td>
           <td>
@@ -496,19 +665,24 @@
         </tr>`;
 
         // Appending the new IP ACL group the container
-        document.getElementById('ipacl-group-container').innerHTML += ipaclGroupRowHtml;
+        document.getElementById("ipacl-group-container").innerHTML +=
+          ipaclGroupRowHtml;
       }
 
       // Function to get the selected IP ACL group action
       function getSelectedIpaclGroupAction() {
         // Get all radio buttons within the group
-        const actionRadios = document.querySelectorAll('.ipacl-group-action-group .btn-check');
+        const actionRadios = document.querySelectorAll(
+          ".ipacl-group-action-group .btn-check"
+        );
 
         // Iterate over the radio buttons to find the checked one
         for (let radio of actionRadios) {
           if (radio.checked) {
             // Get the corresponding label text (ALLOW or DENY)
-            const label = document.querySelector(`label[for="${radio.id}"]`).textContent;
+            const label = document.querySelector(
+              `label[for="${radio.id}"]`
+            ).textContent;
             return label; // This will be either "ALLOW" or "DENY"
           }
         }
@@ -518,98 +692,122 @@
 
       // Handling a row click (a row: IP access control list group)
       function handleRowClick() {
-        const ipaclGroupId = this.getAttribute('data-id');
+        const ipaclGroupId = this.getAttribute("data-id");
 
         console.log("ipaclGroupId: " + ipaclGroupId);
 
         if (ipaclGroupId != null) {
           // AJAX request to server to get IP ACL targets with IP ACL Group ID
-          fetch('/kk/svc/ipacl-targets/' + ipaclGroupId, {
-            method: 'GET',
+          fetch("/kk/svc/ipacl-targets/" + ipaclGroupId, {
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           })
-          .then(response => {
-            console.log(response);
-            if (!response.ok) {
-              throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(data => {
-            console.log('data:');
-            console.log(data);
-            let ipaclTargets = data.ipacl_targets;
+            .then((response) => {
+              console.log(response);
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok: " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log("data:");
+              console.log(data);
+              let ipaclTargets = data.ipacl_targets;
 
-            loadIpACLTargetSection(ipaclGroupId);
+              loadIpACLTargetSection(ipaclGroupId);
 
               // Bind the 'create' button click event
-              createButton = document.querySelector('#ipacl-target-create .create-ipactl-target-btn');
-              createButton.addEventListener('click', handleCreateIpACLTargetButtonClick);
+              createButton = document.querySelector(
+                "#ipacl-target-create .create-ipactl-target-btn"
+              );
+              createButton.addEventListener(
+                "click",
+                handleCreateIpACLTargetButtonClick
+              );
 
-            if (ipaclTargets != null && ipaclTargets.length > 0) {
-              ipaclTargets.forEach((target) => {
+              if (ipaclTargets != null && ipaclTargets.length > 0) {
+                ipaclTargets.forEach((target) => {
+                  // Append a row for each IP ACL target
+                  appendTargetRowHTML(target);
 
-                // Append a row for each IP ACL target
-                appendTargetRowHTML(target);
-                
-                // Bind the 'delete' click event to the new button
-                const newButton = document.querySelector('#ipacl-target-' + target.id + ' .delete-ipactl-target-btn');
-                newButton.addEventListener('click', handleDeleteIpACLTargetButtonClick);
-              });
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-            // Handle error response
-          });
+                  // Bind the 'delete' click event to the new button
+                  const newButton = document.querySelector(
+                    "#ipacl-target-" + target.id + " .delete-ipactl-target-btn"
+                  );
+                  newButton.addEventListener(
+                    "click",
+                    handleDeleteIpACLTargetButtonClick
+                  );
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // Handle error response
+            });
         }
       }
 
       function handleDeleteIpACLGroupButtonClick() {
-        const ipaclGroupId = this.closest('.modal').getAttribute('data-id');
-        const confirmText = this.closest('.modal').querySelector('#confirmText').value;
+        const ipaclGroupId = this.closest(".modal").getAttribute("data-id");
+        const confirmText =
+          this.closest(".modal").querySelector("#confirmText").value;
 
         console.log("ipaclGroupId: " + ipaclGroupId);
 
-        if (confirmText.toLowerCase() === 'delete') {
+        if (confirmText.toLowerCase() === "delete") {
           if (ipaclGroupId != null) {
             // AJAX request to server for deleting a IP ACL group
-            fetch('/kk/svc/ipacl-groups/' + ipaclGroupId, {
-              method: 'DELETE'
+            fetch("/kk/svc/ipacl-groups/" + ipaclGroupId, {
+              method: "DELETE",
             })
-            .then(response => { // Processing the response
-              console.log(response);
-              if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-              }
-              return response.json();
-            })
-            .then(data => { // Handling success
-              console.log('data:');
-              console.log(data);
+              .then((response) => {
+                // Processing the response
+                console.log(response);
+                if (!response.ok) {
+                  throw new Error(
+                    "Network response was not ok: " + response.statusText
+                  );
+                }
+                return response.json();
+              })
+              .then((data) => {
+                // Handling success
+                console.log("data:");
+                console.log(data);
 
-              // Close the modal using Bootstrap's JavaScript method
-              var deleteGroupModalElement = document.getElementById('modal-ipacl-group-' + ipaclGroupId);
-              var deleteGroupModal = bootstrap.Modal.getInstance(deleteGroupModalElement);
-              deleteGroupModal.hide();
+                // Close the modal using Bootstrap's JavaScript method
+                var deleteGroupModalElement = document.getElementById(
+                  "modal-ipacl-group-" + ipaclGroupId
+                );
+                var deleteGroupModal = bootstrap.Modal.getInstance(
+                  deleteGroupModalElement
+                );
+                deleteGroupModal.hide();
 
-              // Handle success response
-              document.getElementById('ipacl-group-element-' + ipaclGroupId).remove();
-            })
-            .catch((error) => { // Error handling
-              console.error('Error:', error);
-              // Handle error response
-            });
+                // Handle success response
+                document
+                  .getElementById("ipacl-group-element-" + ipaclGroupId)
+                  .remove();
+              })
+              .catch((error) => {
+                // Error handling
+                console.error("Error:", error);
+                // Handle error response
+              });
           } else {
-            alert('Confirmation text does not match. Please type "delete" to confirm.');
+            alert(
+              'Confirmation text does not match. Please type "delete" to confirm.'
+            );
           }
         }
-      };
+      }
 
-      function loadIpACLTargetSection(ipaclGroupId){
-        
+      function loadIpACLTargetSection(ipaclGroupId) {
         const ipaclTargetsSectionHtml = `<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">NHN Cloud /</span> IP access control list targets (ACL targets)</h4>
 
         <!-- Button trigger modal for adding a IP access control list target to the group -->
@@ -682,7 +880,8 @@
         </div>
         <!--/ Hoverable Table rows -->`;
         // Appending the new IP ACL target the container
-        document.getElementById('ipacl-targets-section').innerHTML = ipaclTargetsSectionHtml;
+        document.getElementById("ipacl-targets-section").innerHTML =
+          ipaclTargetsSectionHtml;
       }
 
       function appendTargetRowHTML(target) {
@@ -739,14 +938,19 @@
 
           </td>
         </tr>`;
-        document.getElementById('ipacl-target-container').innerHTML += targetRowHtml;
+        document.getElementById("ipacl-target-container").innerHTML +=
+          targetRowHtml;
       }
 
       // Handling the 'create' button click
       function handleCreateIpACLTargetButtonClick() {
-        const ipaclGroupId = this.closest('.modal').getAttribute('data-id');
-        const cidrAddress = document.getElementById('cidr-address-' + ipaclGroupId).value;
-        const description = document.getElementById('description-' + ipaclGroupId).value;
+        const ipaclGroupId = this.closest(".modal").getAttribute("data-id");
+        const cidrAddress = document.getElementById(
+          "cidr-address-" + ipaclGroupId
+        ).value;
+        const description = document.getElementById(
+          "description-" + ipaclGroupId
+        ).value;
 
         console.log("ipaclGroupId: " + ipaclGroupId);
         console.log("cidrAddress: " + cidrAddress);
@@ -754,99 +958,122 @@
 
         // AJAX request to server for creating a IP access control list target
         const data = {
-          "ipacl_target": {
-            "ipacl_group_id": ipaclGroupId,
-            "cidr_address": cidrAddress,
-            "description": description
-          }
+          ipacl_target: {
+            ipacl_group_id: ipaclGroupId,
+            cidr_address: cidrAddress,
+            description: description,
+          },
         };
 
-        fetch('/kk/svc/ipacl-targets', {
-          method: 'POST',
+        fetch("/kk/svc/ipacl-targets", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             if (!response.ok) {
-              throw new Error('Network response was not ok: ' + response.statusText);
+              throw new Error(
+                "Network response was not ok: " + response.statusText
+              );
             }
             return response.json();
           })
-          .then(data => {
-            console.log('data:');
+          .then((data) => {
+            console.log("data:");
             console.log(data);
             ipaclTarget = data.ipacl_target;
 
             // Constructing and appending a new HTML element for the created IP ACL target
-            appendTargetRowHTML(ipaclTarget);            
+            appendTargetRowHTML(ipaclTarget);
 
             // Bind the 'delete' click event to the new button
-            const newButton = document.querySelector('#ipacl-target-' + ipaclTarget.id + ' .delete-ipactl-target-btn');
-            newButton.addEventListener('click', handleDeleteIpACLTargetButtonClick);
+            const newButton = document.querySelector(
+              "#ipacl-target-" + ipaclTarget.id + " .delete-ipactl-target-btn"
+            );
+            newButton.addEventListener(
+              "click",
+              handleDeleteIpACLTargetButtonClick
+            );
 
             // Close the modal using Bootstrap's JavaScript method
-            var createIpACLTargetModalElement = document.getElementById('ipacl-target-create');
-            var createIpACLTargetModal = bootstrap.Modal.getInstance(createIpACLTargetModalElement);
+            var createIpACLTargetModalElement = document.getElementById(
+              "ipacl-target-create"
+            );
+            var createIpACLTargetModal = bootstrap.Modal.getInstance(
+              createIpACLTargetModalElement
+            );
             createIpACLTargetModal.hide();
 
-            // Reset the form          
-            document.getElementById('cidr-address-' + ipaclGroupId).value = '';
-            document.getElementById('description-' + ipaclGroupId).value = '';
-
+            // Reset the form
+            document.getElementById("cidr-address-" + ipaclGroupId).value = "";
+            document.getElementById("description-" + ipaclGroupId).value = "";
           })
           .catch((error) => {
-            console.error('Error:', error);
+            console.error("Error:", error);
             // Handle error response
           });
       }
 
-      // Handling the 'delete' Button Click 
+      // Handling the 'delete' Button Click
       function handleDeleteIpACLTargetButtonClick() {
-        const ipaclTargetId = this.closest('.modal').getAttribute('data-id');
-        const confirmText = this.closest('.modal').querySelector('#confirmText').value;
+        const ipaclTargetId = this.closest(".modal").getAttribute("data-id");
+        const confirmText =
+          this.closest(".modal").querySelector("#confirmText").value;
 
         console.log("ipaclTargetId: " + ipaclTargetId);
 
-        if (confirmText.toLowerCase() === 'delete') {
+        if (confirmText.toLowerCase() === "delete") {
           // AJAX request to server for deleting a IP access control list target
-          fetch('/kk/svc/ipacl-targets/' + ipaclTargetId, {
-            method: 'DELETE'
+          fetch("/kk/svc/ipacl-targets/" + ipaclTargetId, {
+            method: "DELETE",
           })
-          .then(response => { // Processing the response
-            console.log(response);
-            if (!response.ok) {
-              throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(data => { // Handling success
-            console.log('data:');
-            console.log(data);
+            .then((response) => {
+              // Processing the response
+              console.log(response);
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok: " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              // Handling success
+              console.log("data:");
+              console.log(data);
 
-            // Close the modal using Bootstrap's JavaScript method
-            var deleteTargetModalElement = document.getElementById('ipacl-target-' + ipaclTargetId);
-            var deleteTargetModal = bootstrap.Modal.getInstance(deleteTargetModalElement);
-            deleteTargetModal.hide();
+              // Close the modal using Bootstrap's JavaScript method
+              var deleteTargetModalElement = document.getElementById(
+                "ipacl-target-" + ipaclTargetId
+              );
+              var deleteTargetModal = bootstrap.Modal.getInstance(
+                deleteTargetModalElement
+              );
+              deleteTargetModal.hide();
 
-            // Handle success response
-            document.getElementById('ipacl-target-element-' + ipaclTargetId).remove();
-          })
-          .catch((error) => { // Error handling
-            console.error('Error:', error);
-            // Handle error response
-          });
+              // Handle success response
+              document
+                .getElementById("ipacl-target-element-" + ipaclTargetId)
+                .remove();
+            })
+            .catch((error) => {
+              // Error handling
+              console.error("Error:", error);
+              // Handle error response
+            });
         } else {
-          alert('Confirmation text does not match. Please type "delete" to confirm.');
+          alert(
+            'Confirmation text does not match. Please type "delete" to confirm.'
+          );
         }
-      };
+      }
     </script>
 
     <script>
       window.onload = function () {
-
         name = getValueFromCookies("name");
         role = getValueFromCookies("role");
 
@@ -854,18 +1081,20 @@
         document.getElementById("role").innerHTML = role;
 
         // Bind click event to each ID 'tr' of IP ACL group
-        document.querySelectorAll('.ipacl-group-id').forEach((button) => {
-          button.addEventListener('click', handleRowClick);
+        document.querySelectorAll(".ipacl-group-id").forEach((button) => {
+          button.addEventListener("click", handleRowClick);
         });
 
         // Bind click event to 'create' button of IP ACL group
-        btn = document.querySelector('.create-ipacl-group-btn');
-        btn.addEventListener('click', handleCreateIpACLGroupButtonClick);
+        btn = document.querySelector(".create-ipacl-group-btn");
+        btn.addEventListener("click", handleCreateIpACLGroupButtonClick);
 
         // Bind click event to 'delete' button of each IP ACL group
-        document.querySelectorAll('.delete-ipactl-group-btn').forEach((button) => {
-          button.addEventListener('click', handleDeleteIpACLGroupButtonClick);
-        });
+        document
+          .querySelectorAll(".delete-ipactl-group-btn")
+          .forEach((button) => {
+            button.addEventListener("click", handleDeleteIpACLGroupButtonClick);
+          });
       };
     </script>
 

@@ -19,6 +19,7 @@ func Main(g *echo.Group) {
 	g.GET("/security-group.html", handlers.SecurityGroup)
 	g.GET("/load-balancer.html", handlers.LoadBalancer)
 	g.GET("/ip-acl-group.html", handlers.IpACLGroup)
+	g.GET("/tb-auth-test.html", handlers.TbAuthTest)
 }
 
 func SecurityGroup(g *echo.Group) {
