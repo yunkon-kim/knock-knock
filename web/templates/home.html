@@ -32,7 +32,11 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/assets/img/favicon/favicon.ico"
+    />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,14 +50,28 @@
     <link rel="stylesheet" href="/assets/vendor/fonts/boxicons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/css/core.css"
+      class="template-customizer-core-css"
+    />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/css/theme-default.css"
+      class="template-customizer-theme-css"
+    />
     <link rel="stylesheet" href="/assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
+    />
 
-    <link rel="stylesheet" href="/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link
+      rel="stylesheet"
+      href="/assets/vendor/libs/apex-charts/apex-charts.css"
+    />
 
     <!-- Page CSS -->
 
@@ -71,13 +89,21 @@
       <div class="layout-container">
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <aside
+          id="layout-menu"
+          class="layout-menu menu-vertical menu bg-menu-theme"
+        >
           <div class="app-brand demo">
             <a href="home.html" class="app-brand-link">
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">Knock-knock</span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2"
+                >Knock-knock</span
+              >
             </a>
 
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <a
+              href="javascript:void(0);"
+              class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            >
               <i class="bx bx-chevron-left bx-sm align-middle"></i>
             </a>
           </div>
@@ -87,58 +113,86 @@
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
             <li class="menu-item active">
-                <a href="home.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Home</div>
-                </a>
+              <a href="home.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Home</div>
+              </a>
             </li>
-        
+
             <!-- Access Control -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Access Control</span></li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Access Control</span>
+            </li>
             <!-- Security Group -->
             <li class="menu-item">
-                <a href="security-group.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-table"></i>
-                    <div data-i18n="Tables">Security Group</div>
-                </a>
+              <a href="security-group.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Security Group</div>
+              </a>
             </li>
             <!-- Load Balancer -->
             <li class="menu-item">
               <a href="load-balancer.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Tables">Load Balancer</div>
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Load Balancer</div>
               </a>
             </li>
             <!-- IP ACL groups -->
             <li class="menu-item">
               <a href="ip-acl-group.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-table"></i>
-                  <div data-i18n="Tables">IP ACL groups</div>
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">IP ACL groups</div>
               </a>
-            </li> 
+            </li>
+            <!-- TB auth test -->
+            <li class="menu-item">
+              <a href="tb-auth-test.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">TB auth test</div>
+              </a>
+            </li>
           </ul>
         </aside>
         <!-- / Menu -->
 
         <!-- Layout container -->
         <div class="layout-page">
-          
           {{ template "nav.html" . }}
 
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="row mb-5 h-100 justify-content-center align-items-center">
-                <div class="col-md-6 col-lg-7 mb-3 d-flex justify-content-center ">
-                  <div class="card h-100 text-center align-items-center" style="padding: 40px 20px 5px 20px;">
-                    <img class="card-img-top" src="/img/logo/cloud-barista.png" alt="Cloud-Barista Logo" style="width: 300px; height: auto;" />
+              <div
+                class="row mb-5 h-100 justify-content-center align-items-center"
+              >
+                <div
+                  class="col-md-6 col-lg-7 mb-3 d-flex justify-content-center"
+                >
+                  <div
+                    class="card h-100 text-center align-items-center"
+                    style="padding: 40px 20px 5px 20px"
+                  >
+                    <img
+                      class="card-img-top"
+                      src="/img/logo/cloud-barista.png"
+                      alt="Cloud-Barista Logo"
+                      style="width: 300px; height: auto"
+                    />
                     <div class="card-body">
                       <h5 class="card-title">Empowering Your Cloud Journey</h5>
                       <p class="card-text">
-                        The Cloud-Barista Community drives innovation in multi-cloud technology to create a global cloud integration platform and leverage cloud diversity and infinite potential.
+                        The Cloud-Barista Community drives innovation in
+                        multi-cloud technology to create a global cloud
+                        integration platform and leverage cloud diversity and
+                        infinite potential.
                       </p>
-                      <a href="https://github.com/cloud-barista" class="btn btn-outline-primary" style="margin-bottom: 10px;">Visit Cloud-Barista Community</a>
+                      <a
+                        href="https://github.com/cloud-barista"
+                        class="btn btn-outline-primary"
+                        style="margin-bottom: 10px"
+                        >Visit Cloud-Barista Community</a
+                      >
                     </div>
                   </div>
                 </div>
@@ -160,7 +214,7 @@
     </div>
     <!-- / Layout wrapper -->
 
-{{/*
+    {{/*
     <div class="buy-now">
       <a
         href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
@@ -168,9 +222,8 @@
         class="btn btn-danger btn-buy-now"
         >Upgrade to Pro</a
       >
-    </div> 
-*/}}
-
+    </div>
+    */}}
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
