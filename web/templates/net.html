@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Cloud Network</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+      .container-fluid {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0;
+      }
+      .sidebar {
+        width: 300px;
+        position: sticky;
+        top: 20px;
+        height: calc(100vh - 40px);
+        overflow-y: auto;
+        border-right: 1px solid #ddd;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      .content {
+        flex: 1;
+        padding: 20px;
+        background-color: #fff;
+      }
+      .remove-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      .card {
+        margin-bottom: 20px;
+      }
+      .csp-section {
+        width: 100%;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+      }
+      .vpc-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -10px;
+      }
+      .col-vpc {
+        flex: 1 0 calc(25% - 20px);
+        margin: 10px;
+        min-width: 200px;
+      }
+      @media (max-width: 1200px) {
+        .col-vpc {
+          flex: 1 0 calc(33.33% - 20px);
+        }
+      }
+      @media (max-width: 992px) {
+        .col-vpc {
+          flex: 1 0 calc(50% - 20px);
+        }
+      }
+      @media (max-width: 768px) {
+        .container-fluid {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+        }
+        .content {
+          max-width: 100%;
+        }
+        .col-vpc {
+          flex: 1 0 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="sidebar">
+        <h2 class="mb-4">Design!</h2>
+        <h2 class="mb-4">Your Multi-Cloud Network</h2>
+        <div class="mb-3">
+          <label for="privateNetworkSelect" class="form-label"
+            >Desired Private Network</label
+          >
+          <select id="privateNetworkSelect" class="form-select">
+            <option value="10.0.0.0/8">10.0.0.0/8</option>
+            <option value="172.16.0.0/12">172.16.0.0/12</option>
+            <option value="192.168.0.0/16">192.168.0.0/16</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="supernettingEnabled" class="form-label"
+            >Desire to enable supernetting
+          </label>
+          <select id="supernettingEnabled" class="form-select">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="cspSelect" class="form-label">Select CSP</label>
+          <select id="cspSelect" class="form-select">
+            <option value="AWS">AWS</option>
+            <option value="Azure">Azure</option>
+            <option value="GCP">GCP</option>
+          </select>
+        </div>
+        <button id="addCsp" class="btn btn-primary mt-2">Add CSP</button>
+        <button type="button" id="generateJSON" class="btn btn-success mt-2">
+          Generate JSON
+        </button>
+      </div>
+      <div class="content">
+        <div id="cloudConfigurations"></div>
+        <div id="output" class="mt-3"></div>
+      </div>
+    </div>
+
+    <template id="cspTemplate">
+      <div class="csp-section">
+        <h3 class="card-title">CSP: <span class="csp-name"></span></h3>
+        <div class="mb-3">
+          <label class="form-label">Select Region</label>
+          <select class="form-select region-select">
+            <!-- Region options will be added dynamically -->
+          </select>
+          <button type="button" class="btn btn-secondary add-region mt-2">
+            Add Region
+          </button>
+        </div>
+        <div class="regions"></div>
+      </div>
+    </template>
+
+    <template id="regionTemplate">
+      <div class="card mb-3 region-configuration">
+        <div class="card-body">
+          <button
+            type="button"
+            class="btn btn-danger btn-sm remove-btn remove-region"
+          >
+            X
+          </button>
+          <h4 class="card-title">Region: <span class="region-name"></span></h4>
+          <div class="vpc-container">
+            <!-- VPC cards will be added here -->
+          </div>
+          <button type="button" class="btn btn-secondary add-vpc mt-2">
+            Add VPC
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <template id="vpcTemplate">
+      <div class="col-vpc">
+        <div class="card">
+          <div class="card-body">
+            <h5>VPC setting</h5>
+            <div class="mb-2">
+              <label class="form-label">Subnet #</label>
+              <input type="number" class="form-control subnet-count" required />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Host # per subnet</label>
+              <input
+                type="number"
+                class="form-control hosts-per-subnet"
+                required
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Use N Zones</label>
+              <input type="number" class="form-control use-n-zones" required />
+            </div>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm remove-btn remove-vpc"
+            >
+              X
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script>
+      document.getElementById("addCsp").addEventListener("click", addCsp);
+
+      function addCsp() {
+        const cspSelect = document.getElementById("cspSelect");
+        const selectedCsp = cspSelect.value;
+        const privateNetworkSelect = document.getElementById(
+          "privateNetworkSelect"
+        );
+        const template = document.getElementById("cspTemplate");
+        const clone = template.content.cloneNode(true);
+        clone.querySelector(".csp-name").textContent = selectedCsp;
+
+        const regionSelect = clone.querySelector(".region-select");
+        cspRegions[selectedCsp].forEach((region) => {
+          const option = document.createElement("option");
+          option.value = region;
+          option.textContent = region;
+          regionSelect.appendChild(option);
+        });
+
+        const addRegionBtn = clone.querySelector(".add-region");
+        addRegionBtn.addEventListener("click", () => addRegion(addRegionBtn));
+
+        document.getElementById("cloudConfigurations").appendChild(clone);
+      }
+
+      function addRegion(button) {
+        const cspSection = button.closest(".csp-section");
+        const regionSelect = cspSection.querySelector(".region-select");
+        const selectedRegion = regionSelect.value;
+        const template = document.getElementById("regionTemplate");
+        const clone = template.content.cloneNode(true);
+        clone.querySelector(".region-name").textContent = selectedRegion;
+
+        const addVpcBtn = clone.querySelector(".add-vpc");
+        addVpcBtn.addEventListener("click", () => addVpc(addVpcBtn));
+
+        const removeRegionBtn = clone.querySelector(".remove-region");
+        removeRegionBtn.addEventListener("click", () =>
+          removeRegion(removeRegionBtn)
+        );
+
+        cspSection.querySelector(".regions").appendChild(clone);
+      }
+
+      function addVpc(button) {
+        const regionConfig = button.closest(".region-configuration");
+        const vpcContainer = regionConfig.querySelector(".vpc-container");
+        const template = document.getElementById("vpcTemplate");
+        const clone = template.content.cloneNode(true);
+
+        const removeVpcBtn = clone.querySelector(".remove-vpc");
+        removeVpcBtn.addEventListener("click", () => removeVpc(removeVpcBtn));
+
+        vpcContainer.appendChild(clone);
+      }
+
+      function removeRegion(button) {
+        button.closest(".region-configuration").remove();
+      }
+
+      function removeVpc(button) {
+        button.closest(".col-vpc").remove();
+      }
+
+      document
+        .getElementById("generateJSON")
+        .addEventListener("click", function () {
+          const result = {};
+          const networkConfigurations = [];
+          let allFieldsFilled = true;
+
+          const desiredPriavteNetwork = document.getElementById(
+            "privateNetworkSelect"
+          ).value;
+          const supernettingEnabled = document.getElementById(
+            "supernettingEnabled"
+          ).value;
+
+          document.querySelectorAll(".csp-section").forEach((cspSection) => {
+            const cspName = cspSection.querySelector(".csp-name").textContent;
+            const regions = [];
+            cspSection
+              .querySelectorAll(".region-configuration")
+              .forEach((regionConfig) => {
+                const regionName =
+                  regionConfig.querySelector(".region-name").textContent;
+                const vpcs = [];
+                regionConfig
+                  .querySelectorAll(".col-vpc")
+                  .forEach((vpcConfig) => {
+                    const subnetCount =
+                      vpcConfig.querySelector(".subnet-count").value;
+                    const hostsPerSubnet =
+                      vpcConfig.querySelector(".hosts-per-subnet").value;
+                    const useNZones =
+                      vpcConfig.querySelector(".use-n-zones").value;
+
+                    if (!subnetCount || !hostsPerSubnet || !useNZones) {
+                      allFieldsFilled = false;
+                    }
+
+                    vpcs.push({
+                      subnetCount,
+                      hostsPerSubnet,
+                      useNZones,
+                    });
+                  });
+
+                if (vpcs.length === 0) {
+                  allFieldsFilled = false;
+                }
+
+                regions.push({ name: regionName, vpcs: vpcs });
+              });
+
+            if (regions.length === 0) {
+              allFieldsFilled = false;
+            }
+            networkConfigurations.push({
+              csp: cspName,
+              regions: regions,
+            });
+          });
+
+          if (networkConfigurations.length === 0) {
+            allFieldsFilled = false;
+          }
+
+          if (!allFieldsFilled) {
+            alert("Please fill in all fields before generating JSON.");
+            return;
+          }
+
+          result.desiredPriavteNetwork = desiredPriavteNetwork;
+          result.supernettingEnabled = supernettingEnabled;
+          result.networkConfigurations = networkConfigurations;
+
+          const jsonData = JSON.stringify(result, null, 2);
+          document.getElementById(
+            "output"
+          ).innerHTML = `<pre><code class="language-json">${jsonData}</code></pre>`;
+        });
+
+      // CSP's Region list (example)
+      const cspRegions = {
+        AWS: ["us-east-1", "us-west-2", "eu-central-1", "ap-northeast-2"],
+        Azure: ["eastus", "westeurope", "southeastasia", "koreacentral"],
+        GCP: ["us-central1", "europe-west1", "asia-east1", "asia-northeast3"],
+      };
+    </script>
+  </body>
+</html>
