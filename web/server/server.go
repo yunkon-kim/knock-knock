@@ -111,6 +111,10 @@ func RunFrontendServer(port string) {
 	}
 	e.Renderer = renderer
 
+	e.GET("/net.html", func(c echo.Context) error {
+		return c.Render(http.StatusOK, "net.html", nil)
+	})
+
 	// Routes
 	routes.Auth(e)
 
