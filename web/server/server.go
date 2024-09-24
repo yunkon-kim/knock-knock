@@ -26,6 +26,7 @@ import (
 
 	middlewares "github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares/custom-middlewares"
 	"github.com/yunkon-kim/knock-knock/pkg/iam"
+	"github.com/yunkon-kim/knock-knock/web/handlers"
 	"github.com/yunkon-kim/knock-knock/web/routes"
 )
 
@@ -87,7 +88,7 @@ func RunFrontendServer(port string) {
 
 	e.Use(middleware.Recover())
 	// limit the application to 20 requests/sec using the default in-memory store
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(30)))
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(100)))
 
 	// // Path normalization middleware, which handles like main an main.html as the same path
 	// e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -111,9 +112,7 @@ func RunFrontendServer(port string) {
 	}
 	e.Renderer = renderer
 
-	e.GET("/net.html", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "net.html", nil)
-	})
+	e.GET("/net.html", handlers.ViewNetworkDesign)
 
 	// Routes
 	routes.Auth(e)
