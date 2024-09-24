@@ -24,7 +24,7 @@ var (
 type Config struct {
 	Knockknock KnockknockConfig `mapstructure:"knockknock"`
 	Keycloak   KeycloakConfig   `mapstructure:"keycloak"`
-	JwtAuth    JwtAuthConfig    `mapstructure:"jwt"`
+	JwtAuth    JwtAuthConfig    `mapstructure:"auth"`
 	Nhncloud   NhncloudConfig   `mapstructure:"nhncloud"`
 	Slack      SlackConfig      `mapstructure:"slack"`
 }
