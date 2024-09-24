@@ -17,15 +17,16 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/spf13/viper"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 
 	middlewares "github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares/custom-middlewares"
 	"github.com/yunkon-kim/knock-knock/pkg/iam"
+	"github.com/yunkon-kim/knock-knock/web/handlers"
 	"github.com/yunkon-kim/knock-knock/web/routes"
 )
 
@@ -55,7 +56,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 
 func RunFrontendServer(port string) {
 
-	projectRoot := viper.GetString("knockknock.root")
+	projectRoot := config.Knockknock.Root
 
 	e := echo.New()
 
@@ -87,7 +88,7 @@ func RunFrontendServer(port string) {
 
 	e.Use(middleware.Recover())
 	// limit the application to 20 requests/sec using the default in-memory store
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(30)))
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(100)))
 
 	// // Path normalization middleware, which handles like main an main.html as the same path
 	// e.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -111,9 +112,7 @@ func RunFrontendServer(port string) {
 	}
 	e.Renderer = renderer
 
-	e.GET("/net.html", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "net.html", nil)
-	})
+	e.GET("/net.html", handlers.ViewNetworkDesign)
 
 	// Routes
 	routes.Auth(e)
@@ -169,7 +168,7 @@ func RunFrontendServer(port string) {
 }
 
 func DisplayEndpoints() {
-	selfEndpoint := viper.GetString("self.endpoint")
+	selfEndpoint := config.Knockknock.Self.Endpoint
 
 	// Split the selfEndpoint string based on the colon delimiter
 	endpointParts := strings.Split(selfEndpoint, ":")

@@ -5,19 +5,19 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/slack-go/slack"
-	"github.com/spf13/viper"
 )
 
 var api *slack.Client
 var channelID string
 
-func init() {
-	Init()
+type Config struct {
+	Token     string
+	ChannelId string
 }
 
-func Init() {
-	token := viper.GetString("slack.token")
-	channelID = viper.GetString("slack.channelId")
+func Init(config Config) {
+	token := config.Token
+	channelID = config.ChannelId
 	api = slack.New(token)
 
 	log.Info().Msg("slack client initialized")

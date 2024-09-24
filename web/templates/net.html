@@ -114,9 +114,9 @@
         <div class="mb-3">
           <label for="cspSelect" class="form-label">Select CSP</label>
           <select id="cspSelect" class="form-select">
-            <option value="AWS">AWS</option>
-            <option value="Azure">Azure</option>
-            <option value="GCP">GCP</option>
+            {{ range $provider, $regions := .cspRegions }}
+            <option value="{{ $provider }}">{{ $provider }}</option>
+            {{ end }}
           </select>
         </div>
         <button id="addCsp" class="btn btn-primary mt-2">Add CSP</button>
@@ -344,11 +344,14 @@
         });
 
       // CSP's Region list (example)
-      const cspRegions = {
-        AWS: ["us-east-1", "us-west-2", "eu-central-1", "ap-northeast-2"],
-        Azure: ["eastus", "westeurope", "southeastasia", "koreacentral"],
-        GCP: ["us-central1", "europe-west1", "asia-east1", "asia-northeast3"],
-      };
+      // const cspRegions = {
+      //   AWS: ["us-east-1", "us-west-2", "eu-central-1", "ap-northeast-2"],
+      //   Azure: ["eastus", "westeurope", "southeastasia", "koreacentral"],
+      //   GCP: ["us-central1", "europe-west1", "asia-east1", "asia-northeast3"],
+      // };
+      const cspRegions = {{ .cspRegions }};
+
+      console.log(cspRegions);
     </script>
   </body>
 </html>

@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/viper"
 
 	"github.com/labstack/echo-contrib/session"
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 	"github.com/yunkon-kim/knock-knock/internal/slack"
 	"golang.org/x/oauth2"
@@ -21,6 +22,8 @@ import (
 )
 
 var (
+	once sync.Once
+
 	keycloakOauthConfig *oauth2.Config
 
 	// TODO: randomize it
@@ -33,25 +36,24 @@ var (
 	maxAge = 60 * 30 // 30 minutes
 )
 
-func init() {
-	// Keycloak OAuth2 configuration
-	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.frontend.clientId"),
-		ClientSecret: viper.GetString("keycloak.frontend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.frontend.redirectUrl"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
-		},
-	}
-
-}
-
 func Index(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", nil)
 }
 
 func LoginKeycloak(c echo.Context) error {
+
+	// Keycloak OAuth2 configuration
+	once.Do(func() {
+		keycloakOauthConfig = &oauth2.Config{
+			ClientID:     config.Keycloak.Frontend.ClientId,
+			ClientSecret: config.Keycloak.Frontend.ClientSecret,
+			RedirectURL:  config.Keycloak.Frontend.RedirectUrl,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  config.Keycloak.AuthUrl,
+				TokenURL: config.Keycloak.TokenUrl,
+			},
+		}
+	})
 
 	url := keycloakOauthConfig.AuthCodeURL(oauthStateString)
 	return c.Redirect(http.StatusMovedPermanently, url)
@@ -63,6 +65,7 @@ func AuthCallback(c echo.Context) error {
 	log.Debug().Msgf("%v", c.Request().FormValue("code"))
 
 	code := c.Request().FormValue("code")
+	log.Debug().Msgf("code: %v", code)
 
 	token, err := keycloakOauthConfig.Exchange(context.Background(), code)
 	if err != nil {

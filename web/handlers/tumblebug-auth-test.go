@@ -8,6 +8,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/model"
 )
 
@@ -33,9 +34,9 @@ func TbAuthTest(c echo.Context) error {
 
 	client := resty.New()
 
-	apiEndpoint := "http://localhost:1323"
+	tbRestEndpoint := config.Tumblebug.RestUrl
 	// Set API URL
-	urlTbAuthTest := fmt.Sprintf("%s/tumblebug/auth/test", apiEndpoint)
+	urlTbAuthTest := fmt.Sprintf("%s/auth/test", tbRestEndpoint)
 
 	// Set Resty
 	resp, err := client.R().
@@ -76,5 +77,4 @@ func TbAuthTest(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "tb-auth-test.html", authInfo)
-
 }

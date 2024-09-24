@@ -4,16 +4,18 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	"github.com/yunkon-kim/knock-knock/pkg/iam"
 	"golang.org/x/oauth2"
 )
 
 var (
+	once                sync.Once
 	keycloakOauthConfig *oauth2.Config
 
 	// TODO: randomize it
@@ -26,34 +28,23 @@ var (
 	// maxAge = 60 * 30 // 30 minutes
 )
 
-func init() {
-	// Keycloak OAuth2 configuration
-	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.backend.clientId"),
-		ClientSecret: viper.GetString("keycloak.backend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.backend.redirectUrl"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
-		},
-	}
-
-}
-
 func LoginKeycloak(c echo.Context) error {
 
 	// Keycloak OAuth2 configuration
-	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.backend.clientId"),
-		ClientSecret: viper.GetString("keycloak.backend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.backend.redirectUrl"),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
-		},
-	}
+	once.Do(func() {
+		keycloakOauthConfig = &oauth2.Config{
+			ClientID:     config.Keycloak.Backend.ClientId,
+			ClientSecret: config.Keycloak.Backend.ClientSecret,
+			RedirectURL:  config.Keycloak.Backend.RedirectUrl,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  config.Keycloak.AuthUrl,
+				TokenURL: config.Keycloak.TokenUrl,
+			},
+		}
+	})
 
 	url := keycloakOauthConfig.AuthCodeURL(oauthStateString)
+	log.Debug().Msgf("url: %v", url)
 	return c.Redirect(http.StatusMovedPermanently, url)
 }
 
@@ -63,6 +54,7 @@ func DisplayToken(c echo.Context) error {
 	log.Debug().Msgf("%v", c.Request().FormValue("code"))
 
 	code := c.Request().FormValue("code")
+	log.Debug().Msgf("code: %v", code)
 
 	token, err := keycloakOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
