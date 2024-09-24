@@ -17,10 +17,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/spf13/viper"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 
@@ -55,7 +55,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 
 func RunFrontendServer(port string) {
 
-	projectRoot := viper.GetString("knockknock.root")
+	projectRoot := config.Knockknock.Root
 
 	e := echo.New()
 
@@ -169,7 +169,7 @@ func RunFrontendServer(port string) {
 }
 
 func DisplayEndpoints() {
-	selfEndpoint := viper.GetString("self.endpoint")
+	selfEndpoint := config.Knockknock.Self.Endpoint
 
 	// Split the selfEndpoint string based on the colon delimiter
 	endpointParts := strings.Split(selfEndpoint, ":")

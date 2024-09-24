@@ -9,10 +9,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/viper"
 
 	"github.com/labstack/echo-contrib/session"
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 	"github.com/yunkon-kim/knock-knock/internal/slack"
 	"golang.org/x/oauth2"
@@ -36,12 +36,12 @@ var (
 func init() {
 	// Keycloak OAuth2 configuration
 	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.frontend.clientId"),
-		ClientSecret: viper.GetString("keycloak.frontend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.frontend.redirectUrl"),
+		ClientID:     config.Keycloak.Frontend.ClientId,
+		ClientSecret: config.Keycloak.Frontend.ClientSecret,
+		RedirectURL:  config.Keycloak.Frontend.RedirectUrl,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
+			AuthURL:  config.Keycloak.AuthUrl,
+			TokenURL: config.Keycloak.TokenUrl,
 		},
 	}
 

@@ -8,7 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/spf13/viper"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/controller"
 	middlewares "github.com/yunkon-kim/knock-knock/pkg/api/rest/middlewares/custom-middlewares"
 	"github.com/yunkon-kim/knock-knock/pkg/api/rest/route"
@@ -29,6 +28,7 @@ import (
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/config"
 	_ "github.com/yunkon-kim/knock-knock/internal/logger"
 )
@@ -96,7 +96,7 @@ func RunServer(port string) {
 	e.HideBanner = true
 	//e.colorer.Printf(banner, e.colorer.Red("v"+Version), e.colorer.Blue(website))
 
-	allowedOrigins := viper.GetString("api.allow.origins")
+	allowedOrigins := config.Knockknock.API.Allow.Origins
 	if allowedOrigins == "" {
 		log.Fatal().Msg("allow_ORIGINS env variable for CORS is " + allowedOrigins +
 			". Please provide a proper value and source setup.env again. EXITING...")
@@ -214,11 +214,11 @@ func RunServer(port string) {
 
 func DisplayEndpoints() {
 	// Conditions to prevent abnormal operation due to typos (e.g., ture, falss, etc.)
-	enableAuth := viper.GetString("api.auth.enabled") == "true"
-	apiUser := viper.GetString("api.username")
-	apiPass := viper.GetString("api.password")
+	enableAuth := config.Knockknock.API.Auth.Enabled
+	apiUser := config.Knockknock.API.Username
+	apiPass := config.Knockknock.API.Password
 
-	selfEndpoint := viper.GetString("self.endpoint")
+	selfEndpoint := config.Knockknock.Self.Endpoint
 	apidashboard := " http://" + selfEndpoint + "/knock-knock/swagger/index.html"
 
 	fmt.Print("\n Access to API dashboard")

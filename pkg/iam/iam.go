@@ -12,10 +12,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
 )
 
 func SessionCheckerMW(next echo.HandlerFunc) echo.HandlerFunc {
@@ -67,7 +67,7 @@ func JWTAuthMW() echo.MiddlewareFunc {
 
 	log.Debug().Msg("Start - JWTAuthMW")
 
-	signingMethod := viper.GetString("auth.jwt.signing.method")
+	signingMethod := config.JwtAuth.Jwt.Signing.Method
 	if signingMethod == "" {
 		log.Error().Msg("signing method is not set")
 		return nil
@@ -88,7 +88,7 @@ func JWTAuthMW() echo.MiddlewareFunc {
 func GetKey(token *jwt.Token) (interface{}, error) {
 	log.Debug().Msg("Start - GetKey")
 
-	base64PubKeyStr := viper.GetString("auth.jwt.publickey")
+	base64PubKeyStr := config.JwtAuth.Jwt.PublicKey
 	if base64PubKeyStr == "" {
 		return nil, fmt.Errorf("public key is not set")
 	}

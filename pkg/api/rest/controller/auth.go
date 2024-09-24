@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
+	"github.com/yunkon-kim/knock-knock/internal/config"
 	"github.com/yunkon-kim/knock-knock/pkg/iam"
 	"golang.org/x/oauth2"
 )
@@ -29,12 +29,12 @@ var (
 func init() {
 	// Keycloak OAuth2 configuration
 	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.backend.clientId"),
-		ClientSecret: viper.GetString("keycloak.backend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.backend.redirectUrl"),
+		ClientID:     config.Keycloak.Backend.ClientId,
+		ClientSecret: config.Keycloak.Backend.ClientSecret,
+		RedirectURL:  config.Keycloak.Backend.RedirectUrl,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
+			AuthURL:  config.Keycloak.AuthUrl,
+			TokenURL: config.Keycloak.TokenUrl,
 		},
 	}
 
@@ -44,12 +44,12 @@ func LoginKeycloak(c echo.Context) error {
 
 	// Keycloak OAuth2 configuration
 	keycloakOauthConfig = &oauth2.Config{
-		ClientID:     viper.GetString("keycloak.backend.clientId"),
-		ClientSecret: viper.GetString("keycloak.backend.clientSecret"),
-		RedirectURL:  viper.GetString("keycloak.backend.redirectUrl"),
+		ClientID:     config.Keycloak.Backend.ClientId,
+		ClientSecret: config.Keycloak.Backend.ClientSecret,
+		RedirectURL:  config.Keycloak.Backend.RedirectUrl,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  viper.GetString("keycloak.authURL"),
-			TokenURL: viper.GetString("keycloak.tokenURL"),
+			AuthURL:  config.Keycloak.AuthUrl,
+			TokenURL: config.Keycloak.TokenUrl,
 		},
 	}
 

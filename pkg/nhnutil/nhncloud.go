@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/spf13/viper"
 
 	// Black import (_) is for running a package's init() function without using its other contents.
 	"github.com/rs/zerolog/log"
@@ -178,16 +177,22 @@ var (
 	tokenId                            = ""
 )
 
-func init() {
-	tenantId = viper.GetString("nhncloud.tenantId")
+type Config struct {
+	TenantId    string
+	Username    string
+	ApiPassword string
+}
+
+func Init(config Config) {
+	tenantId = config.TenantId
 	if tenantId == "" {
 		log.Fatal().Msg("tenantId is not set in config file or environment variable")
 	}
-	username = viper.GetString("nhncloud.username")
+	username = config.Username
 	if username == "" {
 		log.Fatal().Msg("username is not set in config file or environment variable")
 	}
-	apiPassword = viper.GetString("nhncloud.apiPassword")
+	apiPassword = config.ApiPassword
 	if apiPassword == "" {
 		log.Fatal().Msg("apiPassword is not set in config file or environment variable")
 	}
