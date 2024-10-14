@@ -22,7 +22,7 @@ func SecurityGroup(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/sg"
+	apiURL := "http://localhost:8057/knock-knock/nhn/sg"
 
 	// Get security groups
 	resp, err := client.R().
@@ -89,7 +89,7 @@ func LoadBalancer(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs"
 
 	// Get load balancers
 	resp, err := client.R().
@@ -116,7 +116,7 @@ func LoadBalancer(c echo.Context) error {
 	}
 
 	// Get IP ACL groups
-	apiURL = "http://localhost:8056/knock-knock/nhn/lbs/ipacl-groups"
+	apiURL = "http://localhost:8057/knock-knock/nhn/lbs/ipacl-groups"
 
 	resp, err = client.R().
 		SetHeader("Accept", "application/json").
@@ -185,7 +185,7 @@ func IpACLGroup(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-groups"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-groups"
 
 	// Get IP access control list groups (IP ACL groups)
 	resp, err := client.R().

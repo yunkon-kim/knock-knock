@@ -28,7 +28,7 @@ func CreateRule(c echo.Context) error {
 	client := resty.New()
 
 	// API endpoint
-	apiURL := "http://localhost:8056/knock-knock/nhn/sgRule"
+	apiURL := "http://localhost:8057/knock-knock/nhn/sgRule"
 
 	token, err := getTokenFromSession(c)
 	if err != nil {
@@ -104,7 +104,7 @@ func DeleteRule(c echo.Context) error {
 	client := resty.New()
 
 	// API endpoint
-	apiURL := "http://localhost:8056/knock-knock/nhn/sgRule/" + ruleID
+	apiURL := "http://localhost:8057/knock-knock/nhn/sgRule/" + ruleID
 
 	// Delete rule
 	resp, err := client.R().

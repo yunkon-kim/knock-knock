@@ -76,7 +76,7 @@ const (
 // @securityDefinitions.apikey Bearer
 // @in header
 // @name Authorization
-// @description Type "Bearer" followed by a space and JWT token (get token in http://localhost:8056/auth)
+// @description Type "Bearer" followed by a space and JWT token (get token in http://localhost:8057/auth)
 func RunServer(port string) {
 
 	log.Info().Msg("Setting Knock-knock REST API server")

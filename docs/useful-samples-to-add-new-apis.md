@@ -261,12 +261,12 @@ make run
 
 Health-check Knock-knock
 ```bash
-curl http://localhost:8056/knock-knock/health
+curl http://localhost:8057/knock-knock/health
 
 # Output if it's running successfully
 # {"message":"knock-knock API server is running"}
 ```
 
 Access to Swagger UI
-- (Default link) http://localhost:8056/knock-knock/swagger/index.html
+- (Default link) http://localhost:8057/knock-knock/swagger/index.html
 - 서버 실행 시, Swagger UI 링크, Default ID 및 Password를 확인할 수 있습니다.

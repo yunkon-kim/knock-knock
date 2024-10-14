@@ -74,8 +74,8 @@ ENV API_PASSWORD default
 ## Set period for auto control goroutine invocation
 ENV AUTOCONTROL_DURATION_MS 10000
 
-## Set SELF_ENDPOINT, to access Swagger API dashboard outside (Ex: export SELF_ENDPOINT=x.x.x.x:8056)
-ENV SELF_ENDPOINT localhost:8056
+## Set SELF_ENDPOINT, to access Swagger API dashboard outside (Ex: export SELF_ENDPOINT=x.x.x.x:8057)
+ENV SELF_ENDPOINT localhost:8057
 
 ## Environment variables that you don't need to touch
 # Swagger UI API document file path 
@@ -83,5 +83,5 @@ ENV APIDOC_PATH /app/pkg/api/rest/docs/swagger.json
 
 ENTRYPOINT [ "/app/knock-knock" ]
 
-EXPOSE 8056
+EXPOSE 8057
 EXPOSE 8888

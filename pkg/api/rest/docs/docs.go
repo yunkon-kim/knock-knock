@@ -1703,7 +1703,7 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "Bearer": {
-            "description": "Type \"Bearer\" followed by a space and JWT token (get token in http://localhost:8056/auth)",
+            "description": "Type \"Bearer\" followed by a space and JWT token (get token in http://localhost:8057/auth)",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

@@ -54,6 +54,7 @@ func LoginKeycloak(c echo.Context) error {
 			},
 		}
 	})
+	time.Sleep(5 * time.Millisecond)
 
 	url := keycloakOauthConfig.AuthCodeURL(oauthStateString)
 	return c.Redirect(http.StatusMovedPermanently, url)
@@ -65,7 +66,6 @@ func AuthCallback(c echo.Context) error {
 	log.Debug().Msgf("%v", c.Request().FormValue("code"))
 
 	code := c.Request().FormValue("code")
-	log.Debug().Msgf("code: %v", code)
 
 	token, err := keycloakOauthConfig.Exchange(context.Background(), code)
 	if err != nil {

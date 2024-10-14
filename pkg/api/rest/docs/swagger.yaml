@@ -1104,7 +1104,7 @@ paths:
       - '[Auth] Test with TB'
 securityDefinitions:
   Bearer:
-    description: Type "Bearer" followed by a space and JWT token (get token in http://localhost:8056/auth)
+    description: Type "Bearer" followed by a space and JWT token (get token in http://localhost:8057/auth)
     in: header
     name: Authorization
     type: apiKey

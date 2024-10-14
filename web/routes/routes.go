@@ -40,5 +40,4 @@ func IpACLGroup(g *echo.Group) {
 	g.GET("/ipacl-targets/:ipacl-group-id", handlers.GetIpACLTarget)
 	g.POST("/ipacl-targets", handlers.CreateIpACLTarget)
 	g.DELETE("/ipacl-targets/:ipacl-target-id", handlers.DeleteIpACLTarget)
-
 }

@@ -40,7 +40,7 @@ that can be bound to Load Balancer, including ALLOW/DENY and CIDR address config
 2. Pull the Docker image: TBD
 3. Run the container with `secrets.yaml`
 ```bash
-docker run --mount type=bind,source="${PWD}"/secrets.yaml,target=/app/conf/ -p 8888:8888 -p 8056:8056 container_image
+docker run --mount type=bind,source="${PWD}"/secrets.yaml,target=/app/conf/ -p 8888:8888 -p 8057:8057 container_image
 ```
 4. Access the web interface at `http://localhost:8888` or `http://your_domain_or_ip:8888`.
 

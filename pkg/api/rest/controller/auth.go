@@ -31,17 +31,17 @@ var (
 func LoginKeycloak(c echo.Context) error {
 
 	// Keycloak OAuth2 configuration
-	once.Do(func() {
-		keycloakOauthConfig = &oauth2.Config{
-			ClientID:     config.Keycloak.Backend.ClientId,
-			ClientSecret: config.Keycloak.Backend.ClientSecret,
-			RedirectURL:  config.Keycloak.Backend.RedirectUrl,
-			Endpoint: oauth2.Endpoint{
-				AuthURL:  config.Keycloak.AuthUrl,
-				TokenURL: config.Keycloak.TokenUrl,
-			},
-		}
-	})
+	// once.Do(func() {
+	keycloakOauthConfig = &oauth2.Config{
+		ClientID:     config.Keycloak.Backend.ClientId,
+		ClientSecret: config.Keycloak.Backend.ClientSecret,
+		RedirectURL:  config.Keycloak.Backend.RedirectUrl,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  config.Keycloak.AuthUrl,
+			TokenURL: config.Keycloak.TokenUrl,
+		},
+	}
+	// })
 
 	url := keycloakOauthConfig.AuthCodeURL(oauthStateString)
 	log.Debug().Msgf("url: %v", url)

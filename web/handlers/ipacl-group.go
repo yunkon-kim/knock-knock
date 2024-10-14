@@ -46,7 +46,7 @@ func BindIpACLGroupToLoadBalancer(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/" + id + "/bind_ipacl_groups"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/" + id + "/bind_ipacl_groups"
 
 	// Get IP access control list targets (IP ACL targets)
 
@@ -110,7 +110,7 @@ func CreateIpACLGroup(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-groups"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-groups"
 
 	// Create IP access control list target (IP ACL target)
 	resp, err := client.R().
@@ -175,7 +175,7 @@ func DeleteIpACLGroup(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-groups/" + id
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-groups/" + id
 
 	// Create IP access control list group (IP ACL group)
 	resp, err := client.R().
@@ -221,7 +221,7 @@ func GetIpACLTarget(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-targets"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-targets"
 
 	// Get IP access control list targets (IP ACL targets)
 
@@ -296,7 +296,7 @@ func CreateIpACLTarget(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-targets"
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-targets"
 
 	// Create IP access control list target (IP ACL target)
 	resp, err := client.R().
@@ -359,7 +359,7 @@ func DeleteIpACLTarget(c echo.Context) error {
 	}
 
 	client := resty.New()
-	apiURL := "http://localhost:8056/knock-knock/nhn/lbs/ipacl-targets/" + id
+	apiURL := "http://localhost:8057/knock-knock/nhn/lbs/ipacl-targets/" + id
 
 	// Create IP access control list target (IP ACL target)
 	resp, err := client.R().
