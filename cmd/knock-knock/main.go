@@ -67,6 +67,13 @@ func init() {
 		log.Fatal().Err(err).Msg("Tumblebug is not ready. Exiting...")
 	}
 
+	apiUrlForNamespace := config.Tumblebug.RestUrl + "/ns"
+	err = setNamespace(apiUrlForNamespace)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to set namespace. Exiting...")
+	}
+
 	log.Info().Msg("Tumblebug is ready. Initializing Beetle...")
 }
 
@@ -114,12 +121,49 @@ func checkReadiness(url string) (bool, error) {
 	return true, nil
 }
 
+func setNamespace(url string) error {
+
+	// Create a new resty client
+	client := resty.New()
+
+	apiUser := config.Tumblebug.API.Username
+	apiPass := config.Tumblebug.API.Password
+	client.SetBasicAuth(apiUser, apiPass)
+
+	// Disable Resty default logging by setting a no-op logger
+	client.SetLogger(&NoOpLogger{})
+
+	resp, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		Get(url + "/knock")
+
+	if resp.IsSuccess() {
+		log.Info().Msg("already exists namespace (knock)")
+		return nil
+	}
+
+	resp, err = client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(map[string]interface{}{
+			"name":        "knock",
+			"description": "namespace for knock-knock",
+		}).
+		Post(url)
+
+	if err != nil || resp.IsError() {
+		log.Error().Err(err).Msgf("failed to create namespace by %s", url)
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 
 	log.Info().Msg("starting knock-knock server")
 
-	// Set the default backendPort number "8056" for the REST API server to listen on
-	backendPort := flag.String("backendPort", "8056", "port number for the restapiserver to listen to")
+	// Set the default backendPort number "8057" for the REST API server to listen on
+	backendPort := flag.String("backendPort", "8057", "port number for the restapiserver to listen to")
 	flag.Parse()
 
 	// Validate port

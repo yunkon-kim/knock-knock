@@ -113,6 +113,10 @@ func RunFrontendServer(port string) {
 	e.Renderer = renderer
 
 	e.GET("/net.html", handlers.ViewNetworkDesign)
+	e.POST("/design/mcNet", handlers.DesignMultiCloudNetwork)
+	e.POST("/validate/mcNet", handlers.ValidateMultiCloudNetwork)
+	e.POST("/mcNet", handlers.CreateMultiCloudNetwork)
+	e.DELETE("/mcNet", handlers.DeleteMultiCloudNetwork)
 
 	// Routes
 	routes.Auth(e)

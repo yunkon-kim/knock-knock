@@ -49,23 +49,23 @@
         border-radius: 4px;
         padding: 15px;
       }
-      .vpc-container {
+      .vnet-container {
         display: flex;
         flex-wrap: wrap;
         margin: -10px;
       }
-      .col-vpc {
+      .col-vnet {
         flex: 1 0 calc(25% - 20px);
         margin: 10px;
         min-width: 200px;
       }
       @media (max-width: 1200px) {
-        .col-vpc {
+        .col-vnet {
           flex: 1 0 calc(33.33% - 20px);
         }
       }
       @media (max-width: 992px) {
-        .col-vpc {
+        .col-vnet {
           flex: 1 0 calc(50% - 20px);
         }
       }
@@ -81,7 +81,7 @@
         .content {
           max-width: 100%;
         }
-        .col-vpc {
+        .col-vnet {
           flex: 1 0 100%;
         }
       }
@@ -119,14 +119,49 @@
             {{ end }}
           </select>
         </div>
-        <button id="addCsp" class="btn btn-primary mt-2">Add CSP</button>
-        <button type="button" id="generateJSON" class="btn btn-success mt-2">
-          Generate JSON
-        </button>
+        <div class="mb-3">
+          <button id="addCsp" class="btn btn-primary mt-2">Add CSP</button>
+        </div>
+        <div class="mb-3">
+          <button
+            type="button"
+            id="generateDesiredNetwork"
+            class="btn btn-success mt-2"
+          >
+            Generate Desired Network JSON
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <button type="button" id="designNetwork" class="btn btn-warning mt-2">
+            Design Multi-Cloud Network
+          </button>
+        </div>
+        <div class="mb-3">
+          <button
+            type="button"
+            id="validateNetwork"
+            class="btn btn-warning mt-2"
+          >
+            Validate Multi-Cloud Network
+          </button>
+        </div>
+        <div class="mb-3">
+          <button type="button" id="createNetwork" class="btn btn-warning mt-2">
+            Create Multi-Cloud Network
+          </button>
+        </div>
+        <div class="mb-3">
+          <button type="button" id="deleteNetwork" class="btn btn-warning mt-2">
+            Delete Multi-Cloud Network
+          </button>
+        </div>
       </div>
       <div class="content">
         <div id="cloudConfigurations"></div>
-        <div id="output" class="mt-3"></div>
+        <div id="desired-mc-net" class="mt-3"></div>
+        <div id="designed-mc-net" class="mt-3"></div>
+        <div id="configured-mc-net" class="mt-3"></div>
       </div>
     </div>
 
@@ -156,27 +191,32 @@
             X
           </button>
           <h4 class="card-title">Region: <span class="region-name"></span></h4>
-          <div class="vpc-container">
-            <!-- VPC cards will be added here -->
+          <div class="vnet-container">
+            <!-- VNet cards will be added here -->
           </div>
-          <button type="button" class="btn btn-secondary add-vpc mt-2">
-            Add VPC
-          </button>
+          <div class="d-flex align-items-center mt-2">
+            <button type="button" class="btn btn-secondary add-vnet">
+              Add VNet
+            </button>
+            <p class="ms-2 mb-0">
+              Note - VNet examples: VPC in AWS, VNet in Azure, VPC in GCP
+            </p>
+          </div>
         </div>
       </div>
     </template>
 
-    <template id="vpcTemplate">
-      <div class="col-vpc">
+    <template id="vnetTemplate">
+      <div class="col-vnet">
         <div class="card">
           <div class="card-body">
-            <h5>VPC setting</h5>
+            <h5>Desired Virtual Network (VNet)</h5>
             <div class="mb-2">
               <label class="form-label">Subnet #</label>
               <input type="number" class="form-control subnet-count" required />
             </div>
             <div class="mb-2">
-              <label class="form-label">Host # per subnet</label>
+              <label class="form-label">Hosts # per subnet</label>
               <input
                 type="number"
                 class="form-control hosts-per-subnet"
@@ -184,12 +224,12 @@
               />
             </div>
             <div class="mb-2">
-              <label class="form-label">Use N Zones</label>
+              <label class="form-label">Use First N Zones</label>
               <input type="number" class="form-control use-n-zones" required />
             </div>
             <button
               type="button"
-              class="btn btn-danger btn-sm remove-btn remove-vpc"
+              class="btn btn-danger btn-sm remove-btn remove-vnet"
             >
               X
             </button>
@@ -233,8 +273,8 @@
         const clone = template.content.cloneNode(true);
         clone.querySelector(".region-name").textContent = selectedRegion;
 
-        const addVpcBtn = clone.querySelector(".add-vpc");
-        addVpcBtn.addEventListener("click", () => addVpc(addVpcBtn));
+        const addVNetBtn = clone.querySelector(".add-vnet");
+        addVNetBtn.addEventListener("click", () => addVNet(addVNetBtn));
 
         const removeRegionBtn = clone.querySelector(".remove-region");
         removeRegionBtn.addEventListener("click", () =>
@@ -244,103 +284,110 @@
         cspSection.querySelector(".regions").appendChild(clone);
       }
 
-      function addVpc(button) {
+      function addVNet(button) {
         const regionConfig = button.closest(".region-configuration");
-        const vpcContainer = regionConfig.querySelector(".vpc-container");
-        const template = document.getElementById("vpcTemplate");
+        const vnetContainer = regionConfig.querySelector(".vnet-container");
+        const template = document.getElementById("vnetTemplate");
         const clone = template.content.cloneNode(true);
 
-        const removeVpcBtn = clone.querySelector(".remove-vpc");
-        removeVpcBtn.addEventListener("click", () => removeVpc(removeVpcBtn));
+        const removeVNetBtn = clone.querySelector(".remove-vnet");
+        removeVNetBtn.addEventListener("click", () => removeVNet(removeVNetBtn));
 
-        vpcContainer.appendChild(clone);
+        vnetContainer.appendChild(clone);
       }
 
       function removeRegion(button) {
         button.closest(".region-configuration").remove();
       }
 
-      function removeVpc(button) {
-        button.closest(".col-vpc").remove();
+      function removeVNet(button) {
+        button.closest(".col-vnet").remove();
       }
 
-      document
-        .getElementById("generateJSON")
-        .addEventListener("click", function () {
-          const result = {};
-          const networkConfigurations = [];
-          let allFieldsFilled = true;
+      function generateDesiredNetworkJSON() {
+        const result = {};
+        const mcNetConfigurations = [];
+        let allFieldsFilled = true;
 
-          const desiredPriavteNetwork = document.getElementById(
-            "privateNetworkSelect"
-          ).value;
-          const supernettingEnabled = document.getElementById(
-            "supernettingEnabled"
-          ).value;
+        const desiredPrivateNetwork = document.getElementById(
+          "privateNetworkSelect"
+        ).value;
+        const supernettingEnabled = document.getElementById(
+          "supernettingEnabled"
+        ).value;
 
-          document.querySelectorAll(".csp-section").forEach((cspSection) => {
-            const cspName = cspSection.querySelector(".csp-name").textContent;
-            const regions = [];
-            cspSection
-              .querySelectorAll(".region-configuration")
-              .forEach((regionConfig) => {
-                const regionName =
-                  regionConfig.querySelector(".region-name").textContent;
-                const vpcs = [];
-                regionConfig
-                  .querySelectorAll(".col-vpc")
-                  .forEach((vpcConfig) => {
-                    const subnetCount =
-                      vpcConfig.querySelector(".subnet-count").value;
-                    const hostsPerSubnet =
-                      vpcConfig.querySelector(".hosts-per-subnet").value;
-                    const useNZones =
-                      vpcConfig.querySelector(".use-n-zones").value;
+        document.querySelectorAll(".csp-section").forEach((cspSection) => {
+          const cspName = cspSection.querySelector(".csp-name").textContent;
+          const regions = [];
+          cspSection
+            .querySelectorAll(".region-configuration")
+            .forEach((regionConfig) => {
+              const regionName =
+                regionConfig.querySelector(".region-name").textContent;
+              const vNets = [];
+              regionConfig
+                .querySelectorAll(".col-vnet")
+                .forEach((vnetConfig) => {
+                  const subnetCount =
+                    vnetConfig.querySelector(".subnet-count").value;
+                  const hostsPerSubnet =
+                    vnetConfig.querySelector(".hosts-per-subnet").value;
+                  const useFirstNZones =
+                    vnetConfig.querySelector(".use-n-zones").value;
 
-                    if (!subnetCount || !hostsPerSubnet || !useNZones) {
-                      allFieldsFilled = false;
-                    }
+                  if (!subnetCount || !hostsPerSubnet || !useFirstNZones) {
+                    allFieldsFilled = false;
+                  }
 
-                    vpcs.push({
-                      subnetCount,
-                      hostsPerSubnet,
-                      useNZones,
-                    });
+                  vNets.push({
+                    subnetCount,
+                    hostsPerSubnet,
+                    useFirstNZones,
                   });
+                });
 
-                if (vpcs.length === 0) {
-                  allFieldsFilled = false;
-                }
+              if (vNets.length === 0) {
+                allFieldsFilled = false;
+              }
 
-                regions.push({ name: regionName, vpcs: vpcs });
-              });
-
-            if (regions.length === 0) {
-              allFieldsFilled = false;
-            }
-            networkConfigurations.push({
-              csp: cspName,
-              regions: regions,
+              regions.push({ name: regionName, vNets: vNets });
             });
-          });
 
-          if (networkConfigurations.length === 0) {
+          if (regions.length === 0) {
             allFieldsFilled = false;
           }
+          mcNetConfigurations.push({
+            csp: cspName,
+            regions: regions,
+          });
+        });
 
-          if (!allFieldsFilled) {
-            alert("Please fill in all fields before generating JSON.");
-            return;
+        if (mcNetConfigurations.length === 0) {
+          allFieldsFilled = false;
+        }
+
+        if (!allFieldsFilled) {
+          alert("Please fill in all fields before generating JSON.");
+          return;
+        }
+
+        result.desiredPrivateNetwork = desiredPrivateNetwork;
+        result.supernettingEnabled = supernettingEnabled;
+        result.mcNetConfigurations = mcNetConfigurations;
+
+        return JSON.stringify(result, null, 2);
+      }
+
+      // Button to generate JSON
+      document
+        .getElementById("generateDesiredNetwork")
+        .addEventListener("click", function () {
+          const jsonData = generateDesiredNetworkJSON();
+          if (jsonData) {
+            document.getElementById(
+            "desired-mc-net"
+            ).innerHTML = `<div>Desired Multi-Cloud Network</div><pre><code class="language-json">${jsonData}</code></pre>`;
           }
-
-          result.desiredPriavteNetwork = desiredPriavteNetwork;
-          result.supernettingEnabled = supernettingEnabled;
-          result.networkConfigurations = networkConfigurations;
-
-          const jsonData = JSON.stringify(result, null, 2);
-          document.getElementById(
-            "output"
-          ).innerHTML = `<pre><code class="language-json">${jsonData}</code></pre>`;
         });
 
       // CSP's Region list (example)
@@ -352,6 +399,135 @@
       const cspRegions = {{ .cspRegions }};
 
       console.log(cspRegions);
+
+      document
+        .getElementById("designNetwork")
+        .addEventListener("click", function () {
+          const jsonData = generateDesiredNetworkJSON();
+          if (jsonData) {
+            document.getElementById(
+            "desired-mc-net"
+            ).innerHTML = `<div>Desired Multi-Cloud Network</div><pre><code class="language-json">${jsonData}</code></pre>`;
+          }
+
+          if (jsonData) {
+            // Send JSON data to server
+            fetch("/design/mcNet", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: jsonData, // JSON data
+            })
+            .then((response) => {
+              console.log("Raw Response:", response); // Response from server
+              if (response.ok) {
+                return response.json(); // Parse JSON data
+              } else {
+                throw new Error("Network response was not ok");
+              }
+            })
+            .then((data) => {
+              console.log("Response from server:", data);
+              document.getElementById(
+                "designed-mc-net"
+              ).innerHTML = `<div>Designed Multi-Cloud Network</div><pre><code class="language-json" id="mcNetConf">${JSON.stringify(data, null, 2)}</code></pre>`;
+              // alert("Multi-Cloud Network desgiend Successfully!");
+            })
+            .catch((error) => {
+              console.error("There was a problem with the request:", error);
+            });
+          }
+        });
+
+        document
+        .getElementById("validateNetwork")
+        .addEventListener("click", function () {
+          const mcNetConf = document.getElementById("mcNetConf").textContent;
+          if (mcNetConf) {
+            // Send JSON data to server
+            fetch("/validate/mcNet", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: mcNetConf, // JSON data
+            })
+            .then((response) => {
+              console.log("Raw Response:", response); // Response from server
+              if (response.ok) {
+                return response.json(); // Parse JSON data
+              } else {
+                throw new Error("Network response was not ok");
+              }
+            })
+            .then((data) => {
+              console.log("Response from server:", data);
+              alert("Multi-Cloud Network is validated Successfully!");
+            })
+            .catch((error) => {
+              console.error("There was a problem with the request:", error);
+            });
+          }
+        });
+
+        document
+        .getElementById("createNetwork")
+        .addEventListener("click", function () {
+          const mcNetConf = document.getElementById("mcNetConf").textContent;
+          if (mcNetConf) {
+            // Send JSON data to server
+            fetch("/mcNet", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: mcNetConf, // JSON data
+            })
+            .then((response) => {
+              console.log("Raw Response:", response); // Response from server
+              if (response.ok) {
+                return response.json(); // Parse JSON data
+              } else {
+                throw new Error("Network response was not ok");
+              }
+            })
+            .then((data) => {
+              console.log("Response from server:", data);
+              document.getElementById(
+                "configured-mc-net"
+              ).innerHTML = `<div>Multi-Cloud Network Configurations</div><pre><code class="language-json" id="mcNetConf">${JSON.stringify(data, null, 2)}</code></pre>`;
+              //alert("Multi-Cloud Network is created Successfully!");
+            })
+            .catch((error) => {
+              console.error("There was a problem with the request:", error);
+            });
+          }
+        });
+
+        document
+        .getElementById("deleteNetwork")
+        .addEventListener("click", function () {
+            fetch("/mcNet", {
+              method: "DELETE",
+            })
+            .then((response) => {
+              console.log("Raw Response:", response); // Response from server
+              if (response.ok) {
+                return response.json(); // Parse JSON data
+              } else {
+                throw new Error("Network response was not ok");
+              }
+            })
+            .then((data) => {
+              console.log("Response from server:", data);
+              alert("Multi-Cloud Network is deleted Successfully!");
+            })
+            .catch((error) => {
+              console.error("There was a problem with the request:", error);
+            });
+          }
+        );
     </script>
   </body>
 </html>
